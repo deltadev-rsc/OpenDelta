@@ -8,7 +8,7 @@
 #include "lib/commands.h"
 #include "lib/simple_comms.h"
 #include "lib/files.h"
-#include "lib/dltsh.h"
+#include "lib/dltsh_base.h"
 
 #define T_RED "\033[38;2;255;0;0m"
 #define T_GREEN "\033[38;2;0;255;0m"
