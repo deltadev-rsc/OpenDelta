@@ -32,8 +32,11 @@ idt.o: cpu/idt.c
 # isr.o: cpu/isr.c
 # 	clang -m32 -nostdlib -ffreestanding -c $< -o $@ 
 
-kernel.bin: kernel_entry.o kernel.o kernel_base.o idt.o # ints.o isr.o  
+kernel.bin: kernel_entry.o kernel.o kernel_base.o idt.o entry_i386.o # ints.o isr.o  
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
+
+entry_i386.o: entry_i386.asm
+	nasm $< -f elf -o $@
 
 kernel_entry.o: kernel_entry.asm
 	nasm $< -f elf -o $@
@@ -55,5 +58,5 @@ run: open-delta.img kernel.bin
 	$(QEMU) -hdd $< $(QEMU_FLAGS)
 
 clean:
-	rm -f kernel_entry.o kernel.o ints.o isr.o idt.o kernel_base.o 
+	rm -f kernel_entry.o kernel.o ints.o isr.o idt.o kernel_base.o entry_i386.o
 	rm -f boot.bin kernel.bin bootloader.img open-delta.img
