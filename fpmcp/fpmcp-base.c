@@ -51,6 +51,8 @@ static void set_base(void) {
 int main()
 {
     printf("[FPMCP basics]\n");
+    printf("max number of user packages: ", BaseConsts.MAX_NUM_OF_USER_PKGS);
+    printf("max number of base packages: ", BaseConsts.MAX_NUM_OF_BASE_PKGS);
     set_flags();
     set_base();
     return 0;
