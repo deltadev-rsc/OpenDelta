@@ -3,8 +3,10 @@
 
 // simple NULL and other realisation
 #define NULL    ((void *)0)
-#define FALSE   ((void *)0)
-#define TRUE    ((void *)1)
+#define FALSE   ((char *)0)
+#define TRUE    ((char *)1)
+
+typedef unsigned char boolean; 
 
 // idt macros
 #define low_16(address) (uint16_t)((address) & 0xFFFF)
