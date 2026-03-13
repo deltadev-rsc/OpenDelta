@@ -24,6 +24,20 @@ typedef struct {
     struct block_header *next;
 } block_header_t;
 
+typedef long Align;
+
+union header {
+    struct {
+        union header *ptr;
+        unsigned size;
+    } s;
+    Align x;
+};
+
+typedef union header Header;
+
+static Header base;
+
 /* input-output */
 uint8_t inb(uint16_t port);
 void outb(uint16_t port, uint8_t val);
