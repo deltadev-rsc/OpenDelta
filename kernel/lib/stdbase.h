@@ -36,7 +36,17 @@ union header {
 
 typedef union header Header;
 
+struct IDTEntry {
+    unsigned short int offset_lowerbits;
+    unsigned short int selector;
+    unsigned char zero;
+    unsigned char type_attr;
+    unsigned short int offset_higherbits;
+};
+
 static Header base;
+static unsigned int curret_loc = 0;
+static char *vidptr = (char*)0xb8000;
 
 /* input-output */
 uint8_t inb(uint16_t port);
