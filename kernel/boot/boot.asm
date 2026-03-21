@@ -8,6 +8,7 @@
 %include "boot/gdt.asm"
 %include "boot/switch.asm"
 %include "boot/print_hex.asm"
+%include "boot/mboot_tables.asm"
 
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
