@@ -46,8 +46,10 @@ void IdtInit(void)
 
 void entry_point()
 {
-    prints("OS: OpenDelta\n", WHITE);
-    prints("Kernel: dltkernel\n", WHITE);
+    const char *os_name = "OpenDelta v0.1-a\n";
+    const char *kern_name = "dltkernel v0.0.6-p\n";
+    prints(os_name, WHITE);
+    prints(kern_name, WHITE);
     prints("Initializing IDT\n", WHITE);
     IdtInit();
 }
