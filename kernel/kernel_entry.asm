@@ -54,6 +54,30 @@ _exit:
     mov eax, 1
     int 0x80
 
-section .bss
-    resb 8192
+
+;section .bss
+;    resb 8192
 stack_space:
+
+[bits 64]
+long_mode_entry:
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+
+    lea rsp, [rel stack64_top]
+    and rsp, -16
+
+    mov rdi, rbx
+    call kmain
+
+.hang64:
+    hlt
+    jmp .hang64
+
+section .bss
+align 16
+stack64_bottom:
+    resb 65536
+stack64_top:
