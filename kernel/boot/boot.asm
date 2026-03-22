@@ -1,5 +1,5 @@
 [bits 16]
-[org 0x0000:0x7c00]
+[org 0x7c00]
 
 ; includes like .h in C
 %include "boot/disk.asm"
@@ -13,13 +13,22 @@
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
 
+%define fat12 1
+%define fat16 2
+%define fat32 3
+%define ext2  4
+
 ; data, strings, messages...
 section .data
-    str_real dw "Started in 16-bit real mode", ENDL, 0x0
-    str_pmode dw "Landed in 32-bit prorected mode", ENDL, 0x0
-    str_load dw "Loading dltkernel from the disk", ENDL, 0x0
-    str_returned_kernel dw "Returned from kernel. Error?", ENDL, 0x0
+    str_real: dw "Started in 16-bit real mode", ENDL, 0x0
+    str_pmode: dw "Landed in 32-bit prorected mode", ENDL, 0x0
+    str_load: dw "Loading dltkernel from the disk", ENDL, 0x0
+    
     boot_drive db 0x0
+
+    ; errors
+    str_returned_kernel: dw "Returned from kernel. Error?", ENDL, 0x0
+    str_read_fail: dw "[err]: [read failed!]", ENDL, 0x0
 
 ; main and important variably for starting program
 section .text
