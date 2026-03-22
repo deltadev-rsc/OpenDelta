@@ -17,6 +17,20 @@ typedef unsigned int status_t;
 #define IRQ_OFF { asm volatile ("cli"); }
 #define PAUSE { asm volatile ("hlt"); }
 
+/*---structures-for-list_t-type---*/
+typedef struct node {
+	struct node * next;
+	struct node * prev;
+	void * value;
+	void * owner;
+} __attribute__((packed)) node_t;
+
+typedef struct  {
+	node_t * head;
+	node_t * tail;
+	size_t length;
+} __attribute__((packed)) list_t;
+
 /*---structures---*/
 typedef struct page {
     unsigned int present:1;
@@ -65,6 +79,68 @@ typedef struct image {
     volatile int lock[2];
 } image_t;
 
+typedef struct descriptor_table {
+    uint64_t *offset;
+    int *modes;
+    size_t len;
+    size_t capacity;
+    size_t refs;
+} fd_table_t;
 
+typedef struct signal_table {
+    uintptr_t functions[NUMSIGNS+1];
+} sig_table_t;
+
+typedef struct tree_node {
+    void *value;
+    list_t *children;
+    struct tree_node *parent;
+} tree_node_t;
+
+typedef struct {
+    size_t nodes;
+    tree_node_t *root;
+} tree_t;
+
+typedef struct process {
+    pid_t id;
+    char *name;
+    char *description;
+    user_t user;
+    user_t real_user;
+    int mask;
+
+    char **cmdline;
+
+    pid_t group;
+    pid_t job;
+    pid_t session;
+
+    thread_t theard;
+    tree_node_t *tree_entry;
+    image_t image;
+    char *wd_name;
+    fd_table_t *fds;
+    status_t status;
+    sig_table_t signals;
+    uint8_t finished;
+    uint8_t started;
+    uint8_t running;
+    list_t *wait_queue;
+    list_t *shm_mappings;
+    list_t *signal_queue;
+    thread_t signal_state;
+    char *signal_kstack;
+    node_t sched_node;
+    node_t sleep_node;
+    node_t *timed_sleep_node;
+    uint8_t is_tasklet;
+    volatile uint8_t sleep_interrupted;
+    list_t *node_waits;
+    int awoken_index;
+    node_t *timeout_node;
+    struct Timeval start;
+    uint8_t suspended;
+} process_t;
 
 #endif 
