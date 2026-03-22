@@ -23,16 +23,23 @@ all: run
 boot.bin: boot/boot.asm 
 	nasm $< -f bin -o $@
 
-idt.o: cpu/idt.c
-	$(CC) $(FLAGS) -c $< -o $@
+libs.o: 
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/errno.h -o $@ 
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/idt.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/isr.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/multiboot.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/stdbase.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/stdlib.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/string.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/syscall.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/system.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/time.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/timer.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/types.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/ports.h -o $@
+	$(CC) -m32 -march=i386 -ffreestanding -nostdlib -H lib/screen.h -o $@
 
-# ints.o: cpu/ints.asm
-# 	nasm $< -f elf -o $@
-
-# isr.o: cpu/isr.c
-# 	clang -m32 -nostdlib -ffreestanding -c $< -o $@ 
-
-kernel.bin: kernel_entry.o kernel.o kernel_base.o idt.o entry_i386.o # ints.o isr.o  
+kernel.bin: kernel_entry.o kernel.o kernel_base.o idt.o entry_i386.o
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
 
 entry_i386.o: entry_i386.asm
@@ -58,5 +65,5 @@ run: open-delta.img kernel.bin
 	$(QEMU) -hdd $< $(QEMU_FLAGS)
 
 clean:
-	rm -f kernel_entry.o kernel.o ints.o isr.o idt.o kernel_base.o entry_i386.o
+	rm -f kernel_entry.o kernel.o ints.o isr.o idt.o kernel_base.o entry_i386.o libs.o
 	rm -f boot.bin kernel.bin bootloader.img open-delta.img
