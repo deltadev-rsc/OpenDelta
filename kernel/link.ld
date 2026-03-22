@@ -15,6 +15,9 @@ SECTIONS
         KEEP(*(.multiboot))
     } :text 
 
+    .fsjump : { *(.fsjump) }
+    .fsheaders : { *(.fsheaders) }
+
     .text : { 
         *(.text)
         *(.text*)
