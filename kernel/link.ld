@@ -21,7 +21,12 @@ SECTIONS
         *(.rodata)
         *(.rodata*)
     } :text
-    
+
+    .entry : {
+        __entry_start = .;
+        *(.entry)
+    } :text
+
     .data : { 
         *(.data)
         *(.data*)
