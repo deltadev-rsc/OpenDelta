@@ -2,8 +2,6 @@
 #include "./lib/types.h"
 #include "./lib/multiboot.h"
 #include "./lib/string.h"
-#include "./lib/isr.h"
-#include "./lib/idt.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
