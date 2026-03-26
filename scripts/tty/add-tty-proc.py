@@ -11,7 +11,7 @@ def main():
         sys.exit(1)
     else:
         try:
-            subprocess.run(f"agetty -L {tty_path} {baudrate}", check=True, capture_output=True, text=True)
+            subprocess.run(['agetty', '-L'] + tty_path + baudrate, check=True, capture_output=True, text=True)
         except subprocess.CalledProcessError as e:
             print("[err]: [failed to init tty process]\n")
             print(e.stderr)
