@@ -76,14 +76,13 @@ void your_version()
 
 void editorLogo()
 {
-    printf(T_MAGENTA "_________     \n" T_RESET);
-    printf(T_MAGENTA "| |===X X        ________           __\n" T_RESET);
-    printf(T_MAGENTA "| |    X X      / /    XX    XX    / /  \n" T_RESET);
-    printf(T_MAGENTA "| |     X X    / /      XX    XX  / / \n" T_RESET);
-    printf(T_MAGENTA "| |      X X  / /        XX    XX/ /   \n" T_RESET);
-    printf(T_MAGENTA "| |      / /  X X________xx     / /XX   \n" T_RESET);
-    printf(T_MAGENTA "| |     / /    X X             / /  XX  \n" T_RESET);
-    printf(T_MAGENTA "|_|____/_/      X X_____/_/   /_/    XX \n" T_RESET);
+    printf(T_MAGENTA "████████        ███████     █       █   ██  ████████        ███████\n" T_RESET);
+    printf(T_MAGENTA "██     ██      ██     ██    ██     ██       ██     ██      ██     ██\n" T_RESET);
+    printf(T_MAGENTA "██      ██    ██       ██    ██   ██    ██  ██      ██    ██       ██\n" T_RESET);
+    printf(T_MAGENTA "██       ██  ██         ██    █████     ██  ██       ██  ██         ██\n" T_RESET);
+    printf(T_MAGENTA "██       ██  █████████████   ██   ██    ██  ██       ██  █████████████\n" T_RESET);
+    printf(T_MAGENTA "██      ██    ██            ██     ██   ██  ██      ██    ██\n" T_RESET);
+    printf(T_MAGENTA "█████████      ██████████   █       █   ██  █████████      ██████████\n" T_RESET);
 }
 
 void editor()
@@ -185,4 +184,3 @@ void print_fetch()
 }
 
 #endif
-
