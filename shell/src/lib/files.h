@@ -38,7 +38,7 @@ typedef struct {
     int isDisplaying;
 } file_explorer;
 
-void add_file();
+void add_file(char fileName[MFNL]);
 void add_dir();
 void del();
 void displayFile(const char *fileName);
