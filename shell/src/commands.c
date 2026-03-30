@@ -85,6 +85,22 @@ void editorLogo()
     printf(T_MAGENTA "█████████      ██████████   █       █   ██  █████████      ██████████\n" T_RESET);
 }
 
+// for editor
+void addFile(char fileName[MFNL])
+{
+    int isCreated = 0;
+    FILE * file = fopen(fileName, "a");
+
+    if (file == NULL) {
+        printf(T_RED "[FAILED TO CREATE FILE!]\n" T_RESET);
+        isCreated = 0;
+    }
+    else {
+        fclose(file);
+        isCreated = 1;
+    }
+}
+
 void editor()
 {
     char lines[MAX_LINES][MAX_LINE_LENGTH];
