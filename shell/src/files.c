@@ -47,16 +47,16 @@ typedef struct {
 } file_explorer;
 
 /* add file */
-void add_file()
+void add_file(char fileName[MFNL])
 {
     file_explorer var;
 
     printf(T_CYAN "[🖹 введите имя файла]: \n" T_RESET);
-    scanf("%s\n", var.fileName);
-    printf(T_CYAN "[файл '%s' создан]\n" T_RESET, var.fileName);
+    scanf("%s\n", fileName);
+    printf(T_CYAN "[файл '%s' создан]\n" T_RESET, fileName);
 
     int isCreated = 0;
-    var.file = fopen(var.fileName, "w");
+    var.file = fopen(fileName, "w");
     if (var.file == NULL) {
         printf(T_RED "[ошибка создания файла]\n" T_RESET);
         var.isCreated = 0;
