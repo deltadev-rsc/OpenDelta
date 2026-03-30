@@ -147,7 +147,8 @@ int main(void)
 
         else if (strcmp(console.command, "add-file") == 0) {
             printf(T_CYAN "[добавление файла]\n" T_RESET);
-            add_file();
+            char fileName[256];
+            add_file(fileName);
         }
 
         else if (strcmp(console.command, "add-dir") == 0) {
