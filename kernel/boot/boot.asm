@@ -2,14 +2,14 @@
 [org 0x7c00]
 
 ; includes like .h in C
-%include "boot/i386/disk.asm"
-%include "boot/i386/print.asm"
-%include "boot/i386/print_pmode.asm"
-%include "boot/i386/gdt.asm"
-%include "boot/i386/switch.asm"
-%include "boot/i386/print_hex.asm"
-%include "boot/i386/mboot_tables.asm"
-%include "boot/i386/fat_header.asm"
+%include "boot/disk.asm"
+%include "boot/print.asm"
+%include "boot/print_pmode.asm"
+%include "boot/gdt.asm"
+%include "boot/switch.asm"
+%include "boot/print_hex.asm"
+%include "boot/mboot_tables.asm"
+%include "boot/fat_header.asm"
 
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
