@@ -54,10 +54,8 @@ _exit:
     mov eax, 1
     int 0x80
 
-
-;section .bss
-;    resb 8192
 stack_space:
+    resb 2048
 
 [bits 64]
 long_mode_entry:
