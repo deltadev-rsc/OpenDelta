@@ -3,13 +3,13 @@ ENTRY(_start)
 
 PHDRS
 {
-    text PT_LOAD FLAGS(5);
+    text PT_LOAD FLAGS(5); 
     data PT_LOAD FLAGS(6);
 }
 
 SECTIONS 
 {
-    . = 0x10000;
+    . = 0x100000;
 
     .multiboot ALIGN(4) : {
         KEEP(*(.multiboot))
@@ -21,8 +21,6 @@ SECTIONS
     .text : { 
         *(.text)
         *(.text*)
-        *(.rodata)
-        *(.rodata*)
     } :text
 
     .entry : {
@@ -34,10 +32,15 @@ SECTIONS
         *(.data)
         *(.data*)
     } :data
-    
+
+    .rodata : {
+        *(.rodata)
+        *(.rodata*)
+    } :rodata
+   
     .bss  : { 
         *(.bss)
         *(.bss*)
         *(COMMON)
-    } :data
+    } :data 
 }
