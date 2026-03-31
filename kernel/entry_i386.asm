@@ -29,3 +29,7 @@ start:
     call entry_point
     call kmain
     jmp $
+
+section .bss
+    buffer:
+        resb 512
