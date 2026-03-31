@@ -2,26 +2,26 @@
 [org 0x7c00]
 
 ; includes like .h in C
-%include "boot/disk.asm"
-%include "boot/print.asm"
-%include "boot/print_pmode.asm"
-%include "boot/gdt.asm"
-%include "boot/switch.asm"
-%include "boot/print_hex.asm"
-%include "boot/mboot_tables.asm"
-%include "boot/fat_header.asm"
+%include "boot/i386/disk.asm"
+%include "boot/i386/print.asm"
+%include "boot/i386/print_pmode.asm"
+%include "boot/i386/gdt.asm"
+%include "boot/i386/switch.asm"
+%include "boot/i386/print_hex.asm"
+%include "boot/i386/mboot_tables.asm"
+%include "boot/i386/fat_header.asm"
 
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
 
 ; data, strings, messages...
 section .data
-    str_real: dw "Started in 16-bit real mode", 0
-    str_pmode: dw "Landed in 32-bit prorected mode", 0
-    str_load: dw "Loading dltkernel from the disk", 0
+    str_real: dw "Started in 16-bit real mode", ENDL, 0
+    str_pmode: dw "Landed in 32-bit prorected mode", ENDL, 0
+    str_load: dw "Loading dltkernel from the disk", ENDL, 0
     
     boot_drive db 0x0
-
+ 
     ; errors
     str_returned_kernel: dw "Returned from kernel. Error?", 0
     str_read_fail: dw "[err]: [read failed!]", 0
@@ -32,11 +32,16 @@ section .text
     global _start
 
 _start:
-    mov [boot_drive], dl
+    mov ax, PARTITION_ENTRY_SEGMENT
+    mov es, ax
+    mov di, PARTITION_ENTRY_OFFSET
+    mov cx, 16
+    rep movsb
 
-    mov bp, 0x9000
-    mov sp, bp
-    
+    mov ax, 0
+    mov ds, ax
+    mov es, ax
+
     mov ss, ax
     mov sp, 0x7c00 
 
@@ -44,7 +49,8 @@ _start:
     mov es, bx
     int 13h
 
-    mov  bx, str_real
+
+    mov  bx, str_real 
     call print
     call print_nl
 
