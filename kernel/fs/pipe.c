@@ -16,6 +16,17 @@ static inline size_t pipeUnread(pipe_device_t *pipe)
     }
 }
 
+static int pipeCheck(fs_node_t *node)
+{
+    pipe_device_t *pipe = (pipe_device_t*)node->device;
+
+    if (pipeUnread(pipe) > 0) {
+        return 0;
+    }
+
+    return 1;
+}
+
 static int pipeWait(fs_node_t *node, void *process) 
 {
     pipe_device_t *pipe = (pipe_device_t*)node->device;
@@ -49,4 +60,27 @@ fs_node_t *makePipe(size_t size)
     fnode->gid = 0;
     fnode->mask = 0666;
     fnode->flags = FS_PIPE;
+    fnode->readdir = NULL;
+    fnode->finddir = NULL;
+    fnode->ioctl = NULL;
+    fnode->get_size = pipeSize;
+
+    fnode->selectcheck = pipeCheck;
+    fnode->selectwait = pipeWait;
+
+    fnode->mtime = fnode->atime;
+    fnode->ctime = fnode->atime;
+
+    fnode->device = pipe;
+    
+    pipe->buffer = s_malloc(size);
+    pipe->write_ptr = 0;
+    pipe->read_ptr = 0;
+    pipe->size = size;
+    pipe->dead = 0;
+
+    pipe->wait_queue_writers = listCreate();
+    pipe->wait_queue_readers = listCreate();
+
+    return fnode;
 }
