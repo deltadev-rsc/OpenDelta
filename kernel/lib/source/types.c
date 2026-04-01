@@ -58,7 +58,7 @@ int atoi(char s[])
     return n;
 }
 
-int atol(const char *s)
+long atol(const char *s)
 {
     long i, n;
 
