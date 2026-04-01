@@ -58,7 +58,7 @@ int size_cmp(size_t a, size_t b);
 #endif
 
 int atoi(char s[]);
-int atol(const char *s);
+long atol(const char *s);
 int lower(int c);
 
 #endif
