@@ -11,6 +11,8 @@ void *memset(void *str, int c, size_t n);
 void memory_copy(unsigned char *source, unsigned char *dest, int nbytes);
 void memory_set(uint8_t *dest, uint8_t val, uint32_t len);
 
+int strindex(char s[], char t[]);
+
 int strcmp(const char *stra, const char *strb);
 int strncmp(const char *cs, const char *ct, size_t n); 
 
