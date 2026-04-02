@@ -1,4 +1,3 @@
-#include "../types.h"
 #include "../string.h"
 
 uint64_t next = 1;
@@ -93,6 +92,15 @@ void shellSort(int v[], int n)
             }
         }
     }
+}
+
+void swap(void *v[], int i, int j)
+{
+    void *temp;
+    
+    temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
 }
 
 void reverse(char s[])
