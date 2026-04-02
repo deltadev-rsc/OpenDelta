@@ -64,6 +64,8 @@ struct IDTEntry {
 #define stdout (&_iob[1])
 #define stderr (&_iob[2])
 
+#define NALLOC 1024
+
 #define feof(p) (((p)->flag & _EOF) != 0)
 #define ferror(p) (((p)->flag & _ERR) != 0)
 #define fileno(p) ((p)->fd)
@@ -113,6 +115,9 @@ typedef union header Header;
 static Header base;
 static unsigned int curret_loc = 0;
 
+void *malloc(unsigned nbytes);
+void *free(void *ap);
+static Header *morecore(unsigned nu);
 char *fgets(char *s, int n, FILE * iop);
 int fputs(char *s, FILE *iop);
 int getline(char *line, int max);
