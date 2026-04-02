@@ -70,14 +70,8 @@ struct IDTEntry {
 #define ferror(p) (((p)->flag & _ERR) != 0)
 #define fileno(p) ((p)->fd)
 
-#define getc(p) (--(p)->cnt >= 0 \
-            ? (unsigned char) *(p)->ptr++ : _fillbuf(p))
-
-#define putc(x,p) (--(p)->cnt >= 0 \
-            ? * (p)->ptr++ = (x) : _flushbuf((x), p))
-
-#define getchar()   getc(stdin)
-#define putchar(x)  putc((x), stdout)
+#define getchar()   _getc(stdin)
+#define putchar(x)  _putc((x), stdout)
 
 
 typedef struct _iobuf {
@@ -115,6 +109,8 @@ typedef union header Header;
 static Header base;
 static unsigned int curret_loc = 0;
 
+int _getc(FILE *stream);
+int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
 void *free(void *ap);
 static Header *morecore(unsigned nu);
