@@ -13,6 +13,7 @@ void srand(uint32_t seed);
 int power(int base, int n);
 int trim(char s[]);
 
+void swap(void *v[], int i, int j);
 void copy(char st[], char sf[]);
 void shellSort(int v[], int n);
 void squeeze(char s[], int c);
