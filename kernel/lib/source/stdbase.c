@@ -120,13 +120,27 @@ void prints(const char *str, Colors color)
     }
 }
 
+int _getc(FILE *stream)
+{
+    if (--(stream)->cnt >= 0) {
+        (unsigned char) *(stream)->ptr ; _fillbuf(stream);
+    }
+}
+
+int _putc(int c, FILE *stream) 
+{
+    if (--(stream)->cnt >= 0) {
+        *(stream)->ptr++ = (c) ; _flushbuf((c), stream);
+    }
+}
+
 char *fgets(char *s, int n, FILE * iop) 
 {
     register int c;
     register char *cs;
 
     cs = s;
-    while (--n > 0 && (c = getc(iop)) != EOF) {
+    while (--n > 0 && (c = _getc(iop)) != EOF) {
         if ((*cs++ = c) == '\n') {
             break;
         }
@@ -141,7 +155,7 @@ int fputs(char *s, FILE *iop)
     int c;
 
     while ((c == *s++) != '\0') {
-        putc(c, iop);
+        _putc(c, iop);
     }
 
     return ferror(iop) ? EOF : 0;
