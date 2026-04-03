@@ -1,7 +1,6 @@
-#include "../ports.h"
-#include "../screen.h"
-#include "../types.h"
-#include "../stdbase.h"  
+#include "../lib/ports.h"
+#include "../lib/screen.h"
+#include "../lib/stdbase.h"  
 
 unsigned char port_byte_in(unsigned short port)
 {
