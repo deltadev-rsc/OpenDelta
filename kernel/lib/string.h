@@ -1,15 +1,9 @@
+#ifndef STRING_H
+#define STRING_H
+
 #include "types.h"
 
-#define size_t		unsigned long int
-
-void backspace(char s[]);
-
-void flush(char *var);
-
-void *memcpy(void *dest, const void *src, size_t n);
-void *memset(void *str, int c, size_t n);
-void memory_copy(unsigned char *source, unsigned char *dest, int nbytes);
-void memory_set(uint8_t *dest, uint8_t val, uint32_t len);
+#define size_t	unsigned long int
 
 int strindex(char s[], char t[]);
 
@@ -27,8 +21,10 @@ void int_to_ascii(int n, char str[]);
 
 void hex_to_ascii(int n, char str[]);
 
-int s_sprintf(char *buf, const char *fmt);
+int sprintf(char *buf, const char *fmt);
 
 void *s_malloc(unsigned int size);
 
 uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
+
+#endif
