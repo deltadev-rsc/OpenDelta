@@ -1,6 +1,8 @@
 OUTPUT_FORMAT(binary)
 ENTRY(_start)
 
+phys = 0x100000;
+
 PHDRS
 {
     text PT_LOAD FLAGS(5); 
@@ -9,7 +11,7 @@ PHDRS
 
 SECTIONS 
 {
-    . = 0x100000;
+    . = phys;
 
     .multiboot ALIGN(4) : {
         KEEP(*(.multiboot))
@@ -19,6 +21,7 @@ SECTIONS
     .fsheaders : { *(.fsheaders) }
 
     .text : { 
+        __text_start = .;
         *(.text)
         *(.text*)
     } :text
@@ -28,19 +31,24 @@ SECTIONS
         *(.entry)
     } :text
 
-    .data : { 
+    .data : {
+        __data_start = .;
         *(.data)
         *(.data*)
     } :data
 
     .rodata : {
+        __rodata_start = .;
         *(.rodata)
         *(.rodata*)
-    } :rodata
+    } :data
    
     .bss  : { 
+        __bss_start = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
     } :data 
+
+    __end = .;
 }
