@@ -1,7 +1,7 @@
 #ifndef PORTS_H
 #define PORTS_H
 
-#include "types.h"
+#include "../lib/types.h"
 
 unsigned char port_byte_in(unsigned short port);
 void port_byte_out(unsigned int port, unsigned char data);
