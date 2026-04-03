@@ -2,23 +2,84 @@
 #include "../types.h"
 #include "../string.h"
 
-int _fillbuf(FILE *);
-int _flushbuf(int, FILE *);
+int _fillbuf(FILE *stream) 
+{
+    if (stream->cnt > 0) {
+        return (unsigned char)*stream->ptr++;
+    }
+
+    for (int i = 0; i < OPEN_MAX; i++) {
+        stream->buf[i] = inb(stream->port);
+        if (stream->buf[i] == EOF) {
+            stream->cnt = i;
+            break;
+        }
+    }
+
+
+    if (stream->cnt == 0) {
+        return EOF;
+    }
+
+    stream->ptr = stream->base = stream->buf;
+    stream->cnt = OPEN_MAX - 1;
+
+    return (uint8_t)*stream->ptr++;
+}
+
+int _flushbuf(int c, FILE *stream) 
+{
+    if (stream->cnt == NULL) {
+        outb(stream->port, *(stream->ptr)++);
+        stream->cnt--;
+        return c;
+    }
+
+    for (int i = 0; i < OPEN_MAX; i++) {
+        outb(stream->port, stream->buf[i]);
+    }
+
+    stream->ptr = stream->base = stream->buf;
+    stream->cnt = OPEN_MAX - 1;
+
+    if (c != EOF) {
+        outb(stream->port, c);
+    }
+
+    return c;
+}
+
 extern FILE _iob[OPEN_MAX];
 
 static Header base;
 static Header *freep = NULL;
+static char *dataStart = (char *)0x100000;
+static char *dataEnd = &dataStart;
+
+char sbrk(int incr) 
+{
+    char *oldEnd = dataEnd;
+    char *newEnd = oldEnd + incr;
+
+    if (newEnd < oldEnd) {
+        return (char) -1;
+    }
+
+    dataEnd = newEnd;
+
+    return *oldEnd;
+}
 
 static Header *morecore(unsigned nu)
 {
-    char *cp, *sbrk(int);
+    char *cp;
     Header *up;
 
     if (nu < NALLOC) {
         nu = NALLOC;
     }
 
-    cp = sbrk(nu * sizeof(Header));
+    *cp = sbrk(nu * sizeof(Header));
     if (cp == (char *) - 1) {
         return NULL;
     }
@@ -123,14 +184,20 @@ void prints(const char *str, Colors color)
 int _getc(FILE *stream)
 {
     if (--(stream)->cnt >= 0) {
-        (unsigned char) *(stream)->ptr ; _fillbuf(stream);
+        return (unsigned char) *(stream)->ptr;
+    }
+    else {
+        return _fillbuf(stream);
     }
 }
 
 int _putc(int c, FILE *stream) 
 {
     if (--(stream)->cnt >= 0) {
-        *(stream)->ptr++ = (c) ; _flushbuf((c), stream);
+        return *(stream)->ptr++ = (c);
+    }
+    else {
+        return  _flushbuf((c), stream);
     }
 }
 
@@ -150,6 +217,7 @@ char *fgets(char *s, int n, FILE * iop)
     return (c == EOF && cs == s) ? NULL : s;
 }
 
+
 int fputs(char *s, FILE *iop)
 {
     int c;
@@ -161,6 +229,7 @@ int fputs(char *s, FILE *iop)
     return ferror(iop) ? EOF : 0;
 }
 
+/*
 int getline(char *line, int max) 
 {
     if (fgets(line, max, stdin) == NULL) {
@@ -169,4 +238,4 @@ int getline(char *line, int max)
     else {
         return strlen(line);
     }
-}
+} */
