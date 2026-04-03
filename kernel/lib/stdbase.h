@@ -73,8 +73,9 @@ struct IDTEntry {
 #define getchar()   _getc(stdin)
 #define putchar(x)  _putc((x), stdout)
 
-
 typedef struct _iobuf {
+    uint16_t port;
+    uint8_t buf[OPEN_MAX];
     int cnt;
     char *ptr;
     char *base;
@@ -82,8 +83,6 @@ typedef struct _iobuf {
     int fd;
 } FILE;
 
-int _fillbuf(FILE *);
-int _flushbuf(int, FILE *);
 extern FILE _iob[OPEN_MAX];
 
 enum _flags {
@@ -109,6 +108,9 @@ typedef union header Header;
 static Header base;
 static unsigned int curret_loc = 0;
 
+char sbrk(int incr);
+int _fillbuf(FILE *stream);
+int _flushbuf(int c, FILE *stream);
 int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
