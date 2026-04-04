@@ -1,6 +1,10 @@
 #include "../string.h"
 
+#define MAXLINE 1000
+
 uint64_t next = 1;
+char line[MAXLINE];
+char longest[MAXLINE];
 
 int rand(void)
 {
@@ -69,12 +73,13 @@ int binsearch(int x, int v[], int n)
     return -1;
 }
 
-void copy(char st[], char sf[])
+void copy(void)
 {
     int i;
+    extern char line[], longest[];
 
     i = 0;
-    while ((st[i] = sf[i]) != '\0') {
+    while ((longest[i] = line[i]) != '\0') {
         ++i;
     }
 }
