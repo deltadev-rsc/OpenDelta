@@ -55,10 +55,16 @@ struct IDTEntry {
 };
 
 /*---For-Base---*/
-
 #define EOF (-1)
-#define BUFSIZ 1024
+#define BUFSIZE 1024
 #define OPEN_MAX 20
+#define NAME_MAX 14 
+
+#define S_IFMT 0160000
+#define S_IFDIR 0040000
+#define S_IFCHR 0020000
+#define S_IDBLK 0060000
+#define S_IFREG 0100000
 
 #define stdin (&_iob[0])
 #define stdout (&_iob[1])
@@ -75,13 +81,23 @@ struct IDTEntry {
 
 typedef struct _iobuf {
     uint16_t port;
-    uint8_t buf[OPEN_MAX];
+    uint8_t buf[BUFSIZE];
     int cnt;
     char *ptr;
     char *base;
     int flag;
     int fd;
 } FILE;
+
+typedef struct {
+    long ino;
+    char name[NAME_MAX + 1];
+} Dirent;
+
+typedef struct {
+    int fd;
+    Dirent d;
+} DIR;
 
 extern FILE _iob[OPEN_MAX];
 
