@@ -4,8 +4,12 @@
 
 #include "./types.h"
 
+#define MAXLINE 1000
+
 /* переменные для использования вне функций */
 uint64_t next = 1;
+char line[MAXLINE];
+char longest[MAXLINE];
 
 int rand(void);
 void srand(uint32_t seed);
@@ -14,7 +18,7 @@ int power(int base, int n);
 int trim(char s[]);
 
 void swap(void *v[], int i, int j);
-void copy(char st[], char sf[]);
+void copy(void);
 void shellSort(int v[], int n);
 void squeeze(char s[], int c);
 void reverse(char s[]);
