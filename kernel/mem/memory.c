@@ -1,4 +1,17 @@
 #include "../lib/string.h"
+#include "../lib/system.h"
+#include "../lib/stdbase.h"
+
+#define INDEX_FROM_BIT(b) (b / 0x20)
+#define OFFSET_FROM_BIT(b) (b % 0x20)
+
+extern void *end;
+uint32_t *frames;
+uint32_t nframes;
+uintptr_t placementPointer = (uintptr_t)&end;
+uintptr_t heapEnd = (uintptr_t)NULL;
+page_dir_t *currentDir;
+page_dir_t *kernelDir;
 
 void append(char s[], char n)
 {
@@ -13,7 +26,7 @@ void backspace(char s[])
 	s[len-1] = '\0';
 }
 
-void flush(char *var) 
+void flush(char *var)
 {
 	int i = 0;
 	while(var[i] != '\0')  {
@@ -26,7 +39,7 @@ void *memcpy(void *dest, const void *src, size_t n)
 {
 	char *d = dest;
 	const char *s = src;
-	
+
 	for(size_t i = 0; i < n; i++) {
 		d[i] = s[i];
 	}
@@ -44,7 +57,7 @@ void *memset(void *str, int c, size_t n)
 	return str;
 }
 
-void memory_copy(unsigned char *source, unsigned char *dest, int nbytes) 
+void memory_copy(unsigned char *source, unsigned char *dest, int nbytes)
 {
 	int i;
 	for (i = 0; i < nbytes; i++)  {
@@ -60,4 +73,41 @@ void memory_set(uint8_t *dest, uint8_t val, uint32_t len)
 	}
 }
 
+void paggingInstall(uint32_t memsize)
+{
+	uintptr_t phys;
+	
+	memsize -= 0xe001e190;
+	nframes = memsize / 4;
+    frames = (uint32_t*)kmalloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys);
+    memset(frames, 0, INDEX_FROM_BIT(nframes * 8));
 
+    kernelDir = (page_dir_t *)kmalloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
+    memset(kernelDir, 0, sizeof(page_dir_t));
+
+    asm volatile (
+        "mov $0x277, %%ecx\n"
+        "rdmsr\n"
+        "or $0x1000000, %%edx\n"
+        "and $0xf9ffffff, %%edx\n"
+        "wrmsr\n"
+        : : : "ecx", "edx", "eax"
+    );
+}
+
+void heapInstall(void) {
+    heapEnd = (placementPointer + 0x1000) & ~0xFFFF;
+}
+
+void switchPageDir(page_dir_t *dir)
+{
+    currentDir = dir;
+    asm volatile(
+        "mov %0, %%cr3\n"
+        "mov %%cr0, %%eax\n"
+        "orl $0x80000000. %%eax\n"
+        "mov %%eax, %%cr3\n"
+        :: "r"(dir->physical_address)
+        : "%eax"
+    );
+}
