@@ -1,0 +1,21 @@
+{
+    "name": "dltsh",
+    "version": "v0.0.13-c (latest)",
+    "translator-type": "compiler && interpretor",
+    "directory-for-source-code": "/shell/source",
+    "directory-for-all": "/shell",
+
+    "languages": [
+        "C",
+        "Rust",
+        "Shell",
+        "Python"
+    ],
+
+    "extensions-in-code": [
+        ".c",
+        ".rs",
+        ".sh; .zsh; .fish; .bash",
+        ".py"
+    ]
+}
