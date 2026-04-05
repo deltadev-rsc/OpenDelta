@@ -6,13 +6,13 @@ void initProcTree(void) {
     return;
 }
 
-process_t *spawnInit(void) {
-    process_t *init = malloc(sizeof(process_t));
+sys_process_t *spawnInit(void) {
+    sys_process_t *init = malloc(sizeof(sys_process_t));
     return init;
 }
 
-process_t *spawnKIdle(void) {
-    process_t *idle = malloc(sizeof(process_t));
-    memset(idle, 0x00, sizeof(process_t));
+sys_process_t *spawnKIdle(void) {
+    sys_process_t *idle = malloc(sizeof(sys_process_t));
+    memset(idle, 0x00, sizeof(sys_process_t));
     return idle;
 }
