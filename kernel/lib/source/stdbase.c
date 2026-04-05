@@ -2,13 +2,13 @@
 #include "../types.h"
 #include "../string.h"
 
-int _fillbuf(FILE *stream) 
+int _fillbuf(FILE *stream)
 {
     if (stream->cnt > 0) {
         return (unsigned char)*stream->ptr++;
     }
 
-    for (int i = 0; i < OPEN_MAX; i++) {
+    for (int i = 0; i < BUFSIZE; i++) {
         stream->buf[i] = inb(stream->port);
         if (stream->buf[i] == EOF) {
             stream->cnt = i;
@@ -22,12 +22,12 @@ int _fillbuf(FILE *stream)
     }
 
     stream->ptr = stream->base = stream->buf;
-    stream->cnt = OPEN_MAX - 1;
+    stream->cnt = BUFSIZE - 1;
 
     return (uint8_t)*stream->ptr++;
 }
 
-int _flushbuf(int c, FILE *stream) 
+int _flushbuf(int c, FILE *stream)
 {
     if (stream->cnt == NULL) {
         outb(stream->port, *(stream->ptr)++);
@@ -35,12 +35,12 @@ int _flushbuf(int c, FILE *stream)
         return c;
     }
 
-    for (int i = 0; i < OPEN_MAX; i++) {
+    for (int i = 0; i < BUFSIZE; i++) {
         outb(stream->port, stream->buf[i]);
     }
 
     stream->ptr = stream->base = stream->buf;
-    stream->cnt = OPEN_MAX - 1;
+    stream->cnt = BUFSIZE - 1;
 
     if (c != EOF) {
         outb(stream->port, c);
@@ -55,8 +55,9 @@ static Header base;
 static Header *freep = NULL;
 static char *dataStart = (char *)0x100000;
 static char *dataEnd = &dataStart;
+uint32_t freeMemAddr = 0x10000;
 
-char sbrk(int incr) 
+char sbrk(int incr)
 {
     char *oldEnd = dataEnd;
     char *newEnd = oldEnd + incr;
@@ -127,7 +128,7 @@ void *malloc(unsigned nbytes)
         base.s.ptr = freep = prevp = &base;
         base.s.size = 0;
     }
-    
+
     for (p = prevp->s.ptr; ; prevp = p, p = p->s.ptr) {
         if (p->s.size >= nunits) {
             if (p->s.size == nunits) {
@@ -148,6 +149,21 @@ void *malloc(unsigned nbytes)
             }
         }
     }
+}
+
+uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
+{
+	if(align == 1 && (freeMemAddr & 0xFFFFF000)) {
+		freeMemAddr &= 0xFFFFF000;
+		freeMemAddr += 0x1000;
+	}
+	if(phys_addr) {
+		*phys_addr = freeMemAddr;
+	}
+
+	uint32_t ret = freeMemAddr;
+	freeMemAddr += size; 
+	return ret;
 }
 
 void outb(uint16_t port, uint8_t val) {
@@ -191,7 +207,7 @@ int _getc(FILE *stream)
     }
 }
 
-int _putc(int c, FILE *stream) 
+int _putc(int c, FILE *stream)
 {
     if (--(stream)->cnt >= 0) {
         return *(stream)->ptr++ = (c);
@@ -201,7 +217,7 @@ int _putc(int c, FILE *stream)
     }
 }
 
-char *fgets(char *s, int n, FILE * iop) 
+char *fgets(char *s, int n, FILE * iop)
 {
     register int c;
     register char *cs;
@@ -230,7 +246,7 @@ int fputs(char *s, FILE *iop)
 }
 
 /*
-int getline(char *line, int max) 
+int getline(char *line, int max)
 {
     if (fgets(line, max, stdin) == NULL) {
         return 0;
@@ -238,4 +254,5 @@ int getline(char *line, int max)
     else {
         return strlen(line);
     }
-} */
+}
+*/
