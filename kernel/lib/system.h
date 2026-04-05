@@ -4,6 +4,7 @@
 #include "./time.h"
 #include "./types.h"
 #include "./string.h"
+#include "../fs/headers/list.h"
 
 /*---types---*/
 typedef signed int pid_t;
@@ -16,20 +17,6 @@ typedef unsigned int status_t;
 #define USER_ROOT_UID (user_t)0
 #define IRQ_OFF { asm volatile ("cli"); }
 #define PAUSE { asm volatile ("hlt"); }
-
-/*---structures-for-list_t-type---*/
-typedef struct node {
-	struct node * next;
-	struct node * prev;
-	void * value;
-	void * owner;
-} __attribute__((packed)) node_t;
-
-typedef struct  {
-	node_t * head;
-	node_t * tail;
-	size_t length;
-} __attribute__((packed)) list_t;
 
 /*---structures---*/
 typedef struct page {
@@ -141,6 +128,6 @@ typedef struct process {
     node_t *timeout_node;
     struct Timeval start;
     uint8_t suspended;
-} process_t;
+} sys_process_t;
 
-#endif 
+#endif
