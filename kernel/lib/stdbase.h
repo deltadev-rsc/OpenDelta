@@ -79,6 +79,7 @@ struct IDTEntry {
 #define getchar()   _getc(stdin)
 #define putchar(x)  _putc((x), stdout)
 
+/*---структуры---*/
 typedef struct _iobuf {
     uint16_t port;
     uint8_t buf[BUFSIZE];
@@ -99,8 +100,7 @@ typedef struct {
     Dirent d;
 } DIR;
 
-extern FILE _iob[OPEN_MAX];
-
+/*---перечисление---*/
 enum _flags {
     _READ = 01,
     _WRITE = 02,
@@ -109,7 +109,9 @@ enum _flags {
     _ERR = 020
 };
 
+/*---типы---*/
 typedef long Align;
+typedef union header Header;
 
 union header {
     struct {
@@ -119,10 +121,13 @@ union header {
     Align x;
 };
 
-typedef union header Header;
-
+/*---внешние-переменные---*/
+extern FILE _iob[OPEN_MAX];
 static Header base;
 static unsigned int curret_loc = 0;
+static Header *freep;
+static char *dataStart;
+static char *dataEnd;
 
 char sbrk(int incr);
 int _fillbuf(FILE *stream);
@@ -130,6 +135,7 @@ int _flushbuf(int c, FILE *stream);
 int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
+#undef uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
 void *free(void *ap);
 static Header *morecore(unsigned nu);
 char *fgets(char *s, int n, FILE * iop);
