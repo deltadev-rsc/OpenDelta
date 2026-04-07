@@ -8,6 +8,7 @@ void append(char s[], char n);
 void backspace(char s[]);
 void flush(char *var);
 
+int memcmp(const void* ptr1, const void* ptr2, uint16_t num);
 void *memcpy(void *dest, const void *src, size_t n);
 void *memset(void *str, int c, size_t n);
 void memmory_copy(unsigned char *source, unsigned char *dest, int nbytes);
