@@ -35,6 +35,20 @@ void flush(char *var)
 	}
 }
 
+int memcmp(const void* ptr1, const void* ptr2, uint16_t num)
+{
+    const uint8_t* u8ptr1 = (const uint8_t *)ptr1;
+    const uint8_t* u8ptr2 = (const uint8_t *)ptr2;
+
+    for (uint16_t i = 0; i < num; i++) {
+        if (u8ptr1[i] != u8ptr2[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void *memcpy(void *dest, const void *src, size_t n)
 {
 	char *d = dest;
@@ -79,10 +93,10 @@ void paggingInstall(uint32_t memsize)
 	
 	memsize -= 0xe001e190;
 	nframes = memsize / 4;
-    frames = (uint32_t*)kmalloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys);
-    memset(frames, 0, INDEX_FROM_BIT(nframes * 8));
+    frames = (uint32_t*)kernelAlloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys);
+	memset(frames, 0, INDEX_FROM_BIT(nframes * 8));
 
-    kernelDir = (page_dir_t *)kmalloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
+    kernelDir = (page_dir_t *)kernelAlloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
     memset(kernelDir, 0, sizeof(page_dir_t));
 
     asm volatile (
