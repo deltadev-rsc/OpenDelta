@@ -7,8 +7,8 @@
 #define MAGIC 0xB16B00B5U
 
 /*---for-screen-driver---*/
-#define LINES 				25
-#define COLUMNS_IN_LINE 		80
+#define LINES 				30
+#define COLUMNS_IN_LINE 		85
 #define BYTES_FOR_EACH_ELEMENT 		2
 #define SCREENSIZE 			BYTES_FOR_EACH_ELEMENT * COLUMNS_IN_LINE * LINES
 
@@ -16,7 +16,7 @@
 #define KEYBOARD_STATUS_PORT 		0x64
 #define IDT_SIZE 			256
 #define INTERRUPT_GATE 			0x8e
-#define KERNEL_CODE_SEGMENT_OFFSET 	0x08
+#define KERNEL_CODE_SEGMENT_OFFSET 	0x10000
 
 #define ENTER_KEY_CODE 			0x1C
 #define ENTER_BACKSPACE_CODE		0x0E
@@ -135,7 +135,7 @@ int _flushbuf(int c, FILE *stream);
 int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
-#undef uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
+#undef uint32_t kernelAlloc(size_t size, int align, uint32_t *phys_addr);
 void *free(void *ap);
 static Header *morecore(unsigned nu);
 char *fgets(char *s, int n, FILE * iop);
