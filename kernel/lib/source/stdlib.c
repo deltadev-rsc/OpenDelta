@@ -6,6 +6,10 @@ uint64_t next = 1;
 char line[MAXLINE];
 char longest[MAXLINE];
 
+char toUpper(char c) {
+    return isLower(c) ? (c - 'a' + 'A') : c;
+}
+
 int rand(void)
 {
     next = next * 1103515245 + 12345;
@@ -71,6 +75,10 @@ int binsearch(int x, int v[], int n)
     }
 
     return -1;
+}
+
+boolean isLower(char c) {
+    return c >= 'a' && c <= 'z';
 }
 
 void copy(void)
