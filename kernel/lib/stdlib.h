@@ -19,7 +19,7 @@ void srand(uint32_t seed);
 int power(int base, int n);
 int trim(char s[]);
 
-#undef int isLower(char c);
+#undef boolean isLower(char c);
 
 void swap(void *v[], int i, int j);
 void copy(void);
