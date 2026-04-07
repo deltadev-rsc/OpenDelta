@@ -151,7 +151,7 @@ void *malloc(unsigned nbytes)
     }
 }
 
-uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
+uint32_t kernelAlloc(size_t size, int align, uint32_t *phys_addr)
 {
 	if(align == 1 && (freeMemAddr & 0xFFFFF000)) {
 		freeMemAddr &= 0xFFFFF000;
