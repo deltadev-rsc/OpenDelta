@@ -161,24 +161,3 @@ void *s_malloc(unsigned int size)
 	void *ret = (void*)size;
 	return ret;
 }
-
-uint32_t free_mem_addr = 0x10000;
-
-uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
-{
-	// Pages are aligned to 4K, or 0x1000
-	if(align == 1 && (free_mem_addr & 0xFFFFF000)) {
-		free_mem_addr &= 0xFFFFF000;
-		free_mem_addr += 0x1000;
-	}
-	// Save the physical address
-	if(phys_addr) {
-		*phys_addr = free_mem_addr;
-	}
-
-	uint32_t ret = free_mem_addr;
-	free_mem_addr += size; 
-	return ret;
-}
-
-
