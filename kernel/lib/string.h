@@ -25,6 +25,4 @@ int sprintf(char *buf, const char *fmt);
 
 void *s_malloc(unsigned int size);
 
-uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
-
 #endif
