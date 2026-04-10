@@ -82,6 +82,10 @@ typedef struct tree_node {
     void *value;
     list_t *children;
     struct tree_node *parent;
+    char *word;
+    int count;
+    struct tree_node *left;
+    struct tree_node *right;
 } tree_node_t;
 
 typedef struct {
