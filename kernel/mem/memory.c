@@ -71,7 +71,7 @@ void *memset(void *str, int c, size_t n)
 	return str;
 }
 
-void memory_copy(unsigned char *source, unsigned char *dest, int nbytes)
+void memoryCopy(unsigned char *source, unsigned char *dest, int nbytes)
 {
 	int i;
 	for (i = 0; i < nbytes; i++)  {
@@ -79,11 +79,11 @@ void memory_copy(unsigned char *source, unsigned char *dest, int nbytes)
 	}
 }
 
-void memory_set(uint8_t *dest, uint8_t val, uint32_t len)
+void memorySet(uint8_t *dest, uint8_t val, uint32_t len)
 {
 	uint8_t *temp = (uint8_t *)dest;
 	for( ; len != 0; len--) {
-		 *temp++ = val;
+		*temp++ = val;
 	}
 }
 
@@ -93,10 +93,10 @@ void paggingInstall(uint32_t memsize)
 	
 	memsize -= 0xe001e190;
 	nframes = memsize / 4;
-    frames = (uint32_t*)kernelAlloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys);
+    frames = (uint32_t *)kmalloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys); 
 	memset(frames, 0, INDEX_FROM_BIT(nframes * 8));
 
-    kernelDir = (page_dir_t *)kernelAlloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
+    kernelDir = (page_dir_t *)kmalloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
     memset(kernelDir, 0, sizeof(page_dir_t));
 
     asm volatile (
