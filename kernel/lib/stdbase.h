@@ -1,7 +1,13 @@
 #ifndef BASE_H
 #define BASE_H
 
+#pragma once
+
 #include "./types.h"
+
+#ifdef __cplusplus 
+extern "C" {
+#endif 
 
 #define ALIGN 8
 #define MAGIC 0xB16B00B5U
@@ -135,11 +141,14 @@ int _flushbuf(int c, FILE *stream);
 int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
-#undef uint32_t kernelAlloc(size_t size, int align, uint32_t *phys_addr);
+
+#undef uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
+
 void *free(void *ap);
 static Header *morecore(unsigned nu);
 char *fgets(char *s, int n, FILE * iop);
 int fputs(char *s, FILE *iop);
+void fcopy(FILE *ifp, FILE *ofp);
 int getline(char *line, int max);
 
 /* input-output */
@@ -148,5 +157,9 @@ void outb(uint16_t port, uint8_t val);
 void prints(const char *str, unsigned int color);
 void kprint(const char *str, unsigned int color);
 void kprintnl(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
