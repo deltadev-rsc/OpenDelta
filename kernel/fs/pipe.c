@@ -1,6 +1,8 @@
 #include "./headers/pipe.h"
 #include "./headers/fs.h"
 #include "./headers/list.h"
+#include "../mem/header/memory.h"
+#include "../lib/stdbase.h" 
 
 static inline size_t pipeUnread(pipe_device_t *pipe)
 {
@@ -48,8 +50,8 @@ int pipeSize(fs_node_t *node) {
 
 fs_node_t *makePipe(size_t size)
 {
-    fs_node_t *fnode = s_malloc(sizeof(fs_node_t));
-    pipe_device_t *pipe = s_malloc(sizeof(pipe_device_t));
+    fs_node_t *fnode = malloc(sizeof(fs_node_t));
+    pipe_device_t *pipe = malloc(sizeof(pipe_device_t));
     memset(fnode, 0, sizeof(fs_node_t));
     memset(pipe, 0, sizeof(pipe_device_t));
 
@@ -73,7 +75,7 @@ fs_node_t *makePipe(size_t size)
 
     fnode->device = pipe;
     
-    pipe->buffer = s_malloc(size);
+    pipe->buffer = malloc(size);
     pipe->write_ptr = 0;
     pipe->read_ptr = 0;
     pipe->size = size;
