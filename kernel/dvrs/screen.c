@@ -48,7 +48,28 @@ int printChar(char c, int col, int row, Colors color)
                 COLUMNS_IN_LINE * 2);
             
         }
+
+        char *lastLine = (char *) (getOffset(0, LINES - 1) + (unsigned char*) vidptr);
+        for (i = 0; i < COLUMNS_IN_LINE * 2; i++) {
+            lastLine[i] = 0;
+        }
+
+        offset -= 2 * COLUMNS_IN_LINE;
     }
+
+    setCursorOffset(offset);
+    return offset;
+}
+
+void clearScreen(void)
+{
+    unsigned int i = 0;
+    while (i < SCREENSIZE) {
+        vidptr[i++] = ' ';
+        vidptr[i++] = 0x07;
+    }
+
+    setCursorOffset(getOffset(0, 0));
 }
 
 int getOffset(int col, int row) {
