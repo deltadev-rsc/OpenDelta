@@ -1,13 +1,13 @@
 #include "../string.h"
+#include "../stdlib.h"
 
 #define MAXLINE 1000
 
-uint64_t next = 1;
 char line[MAXLINE];
 char longest[MAXLINE];
 
 char toUpper(char c) {
-    return isLower(c) ? (c - 'a' + 'A') : c;
+    return islower(c) ? (c - 'a' + 'A') : c;
 }
 
 int rand(void)
@@ -77,7 +77,7 @@ int binsearch(int x, int v[], int n)
     return -1;
 }
 
-boolean isLower(char c) {
+int islower(int c) {
     return c >= 'a' && c <= 'z';
 }
 
