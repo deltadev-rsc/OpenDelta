@@ -151,28 +151,28 @@ void *malloc(unsigned nbytes)
     }
 }
 
-uint32_t kernelAlloc(size_t size, int align, uint32_t *phys_addr)
+uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
 {
-	if(align == 1 && (freeMemAddr & 0xFFFFF000)) {
+	if (align == 1 && (freeMemAddr & 0xFFFFF000)) {
 		freeMemAddr &= 0xFFFFF000;
 		freeMemAddr += 0x1000;
 	}
-	if(phys_addr) {
+	if (phys_addr) {
 		*phys_addr = freeMemAddr;
 	}
 
-	uint32_t ret = freeMemAddr;
-	freeMemAddr += size; 
+  uint32_t ret = freeMemAddr;
+	freeMemAddr += size;
 	return ret;
 }
 
 void outb(uint16_t port, uint8_t val) {
-    __asm__ __volatile__ ("outb %0, %1" : : "a" (val), "Nd" (port));
+    __asm__ volatile ("outb %0, %1" : : "a" (val), "Nd" (port));
 }
 
 uint8_t inb(uint16_t port) {
     uint8_t ret;
-    __asm__ __volatile__ ("inb %1, %0" : "=a" (ret) : "Nd" (port));
+    __asm__ volatile ("inb %1, %0" : "=a" (ret) : "Nd" (port));
     return ret;
 }
 
@@ -243,6 +243,14 @@ int fputs(char *s, FILE *iop)
     }
 
     return ferror(iop) ? EOF : 0;
+}
+
+void fcopy(FILE *ifp, FILE *ofp) {
+    int c;
+
+    while ((c = _getc(ifp)) != EOF) {
+        _putc(c, ofp);
+    }
 }
 
 /*
