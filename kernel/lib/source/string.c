@@ -1,5 +1,6 @@
 #include "../string.h"
 #include "../../mem/header/memory.h"
+#include "../stdbase.h" 
 
 int strindex(char s[], char t[]) 
 {
@@ -86,7 +87,7 @@ char *strcat(char *dest, const char *src)
 	return dest;
 }
 
-char *s_strncpy(char *s1, const char *s2, size_t n)
+char *strncpy(char *s1, const char *s2, size_t n)
 {
 	size_t size = strnlen(s2, n);
 	if(size != n) {
@@ -154,10 +155,4 @@ int sprintf(char *buf, const char *fmt)
 {
 	int out = s_vasprintf(buf, fmt);//, args);
 	return out;
-}
-
-void *s_malloc(unsigned int size)
-{
-	void *ret = (void*)size;
-	return ret;
 }
