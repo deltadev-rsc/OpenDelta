@@ -8,49 +8,59 @@ OBJCOPY = llvm-objcopy
 SRCS = kernel.c lib/source/types.c 
 LIBS = lib/types.h 
 
+STDBASE = obj/kernel_base.o
+STDBASE_SRS = lib/source/stdbase.c 
+MEM = obj/mem.o
+MEM_SRC = mem/memory.c
+
 # clang flags for build on i386
-FLAGS = -m32 -march=i386 -fno-pie -ffreestanding -nostdlib
+FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
 
 # image file 
-img = open-delta.img
+img = img/open-delta.img
 
 # qemu
-QEMU = qemu-system-i386
+QEMU = qemu-system-x86_64
 QEMU_FLAGS = -boot c -m 1024 -smp 1 -vga vmware -s -d int
 
 all: run 
 
-boot.bin: boot/boot.asm 
+img/boot.bin: boot/i386/boot.asm 
 	nasm $< -f bin -o $@
 
-idt.o: cpu/idt.c
+obj/ints.o: cpu/asm/ints.asm
+	nasm $< -f elf -o $@
+
+obj/idt.o: cpu/idt.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-kernel.bin: kernel_entry.o kernel.o kernel_base.o idt.o entry_i386.o
+img/kernel.bin: obj/kernel_entry.o obj/kernel.o obj/kernel_base.o obj/idt.o 
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
 
-entry_i386.o: entry_i386.asm
+obj/kernel_entry.o: kernel_entry.asm
 	nasm $< -f elf -o $@
 
-kernel_entry.o: kernel_entry.asm
-	nasm $< -f elf -o $@
+$(MEM): $(MEM_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
 
-kernel_base.o: lib/source/stdbase.c
+$(STDBASE): $(STDBASE_SRS)
 	$(CC) $(FLAGS) -c $< -o $@
  
-kernel.o: $(SRCS) 
+obj/kernel.o: $(SRCS) 
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(img): boot.bin kernel.bin
-	dd if=/dev/zero of=$@ bs=2048 count=4096 status=none
-	mkfs.fat -F12 open-delta.img
-	dd if=boot.bin of=$@ conv=ascii bs=512 count=1
-	dd if=kernel.bin of=$@ conv=ascii bs=2048 count=1
-	cat boot.bin kernel.bin > open-delta.img
+$(img): img/boot.bin img/kernel.bin
+	dd if=/dev/zero of=$@ bs=512 count=32516 status=none
+	mkfs.fat -F12 img/open-delta.img
+	dd if=img/boot.bin of=$@ conv=ascii bs=1024 count=1
+	dd if=img/kernel.bin of=$@ conv=ascii bs=2048 count=1
+	cat img/boot.bin img/kernel.bin > img/open-delta.img
 	
-run: open-delta.img kernel.bin
-	$(QEMU) -hdd $< $(QEMU_FLAGS)
+run: img/open-delta.img img/kernel.bin
+	$(QEMU) -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f kernel_entry.o kernel.o ints.o isr.o idt.o kernel_base.o entry_i386.o libs.o
-	rm -f boot.bin kernel.bin bootloader.img open-delta.img
+	rm -f obj/kernel_entry.o obj/kernel.o obj/idt.o obj/kernel_base.o 
+	rm -f img/boot.bin img/kernel.bin img/open-delta.img
+
+.PHONY: img/boot.bin img/kernel.bin img/open-delta.img run clean 
