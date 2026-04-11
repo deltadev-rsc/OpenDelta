@@ -12,7 +12,6 @@ struct multiboot *mboot = NULL;
 
 void IdtInit(void) 
 {
-    unsigned long kbaddress;
     unsigned long idt_address;
     unsigned long idt_ptr[2];
 
