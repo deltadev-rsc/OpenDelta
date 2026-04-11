@@ -54,7 +54,7 @@ typedef struct {
 
 struct IDTEntry {
     unsigned short int offset_lowerbits;
-    unsigned short int selector;
+    unsigned short selector;
     unsigned char zero;
     unsigned char type_attr;
     unsigned short int offset_higherbits;
@@ -127,14 +127,6 @@ union header {
     Align x;
 };
 
-/*---внешние-переменные---*/
-extern FILE _iob[OPEN_MAX];
-static Header base;
-static unsigned int curret_loc = 0;
-static Header *freep;
-static char *dataStart;
-static char *dataEnd;
-
 char sbrk(int incr);
 int _fillbuf(FILE *stream);
 int _flushbuf(int c, FILE *stream);
@@ -142,16 +134,15 @@ int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
 
-#undef uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr);
+unsigned int kmalloc(unsigned int size, int align, unsigned int *phys_addr);
 
 void *free(void *ap);
-static Header *morecore(unsigned nu);
 char *fgets(char *s, int n, FILE * iop);
 int fputs(char *s, FILE *iop);
 void fcopy(FILE *ifp, FILE *ofp);
 int getline(char *line, int max);
 
-/* input-output */
+/*---input-output---*/
 uint8_t inb(uint16_t port);
 void outb(uint16_t port, uint8_t val);
 void prints(const char *str, unsigned int color);
