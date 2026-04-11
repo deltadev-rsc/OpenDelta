@@ -1,6 +1,6 @@
 #include "../lib/string.h"
 #include "../lib/system.h"
-#include "../lib/stdbase.h"
+#include "./header/memory.h"
 
 #define INDEX_FROM_BIT(b) (b / 0x20)
 #define OFFSET_FROM_BIT(b) (b % 0x20)
@@ -94,12 +94,13 @@ void paggingInstall(uint32_t memsize)
 	memsize -= 0xe001e190;
 	nframes = memsize / 4;
     frames = (uint32_t *)kmalloc(INDEX_FROM_BIT(nframes * 8), 0, (uint32_t*)&phys); 
+	
 	memset(frames, 0, INDEX_FROM_BIT(nframes * 8));
 
     kernelDir = (page_dir_t *)kmalloc(0, sizeof(page_dir_t), (uint32_t *)&phys);
     memset(kernelDir, 0, sizeof(page_dir_t));
 
-    asm volatile (
+    __asm__ volatile (
         "mov $0x277, %%ecx\n"
         "rdmsr\n"
         "or $0x1000000, %%edx\n"
@@ -116,10 +117,10 @@ void heapInstall(void) {
 void switchPageDir(page_dir_t *dir)
 {
     currentDir = dir;
-    asm volatile(
+    __asm__ volatile(
         "mov %0, %%cr3\n"
         "mov %%cr0, %%eax\n"
-        "orl $0x80000000. %%eax\n"
+        "orl $0x80000000, %%eax\n"
         "mov %%eax, %%cr3\n"
         :: "r"(dir->physical_address)
         : "%eax"
