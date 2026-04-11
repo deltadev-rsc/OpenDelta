@@ -151,7 +151,7 @@ void *malloc(unsigned nbytes)
     }
 }
 
-uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
+unsigned int kmalloc(unsigned int size, int align, unsigned int *phys_addr)
 {
 	if (align == 1 && (freeMemAddr & 0xFFFFF000)) {
 		freeMemAddr &= 0xFFFFF000;
@@ -161,7 +161,7 @@ uint32_t kmalloc(size_t size, int align, uint32_t *phys_addr)
 		*phys_addr = freeMemAddr;
 	}
 
-  uint32_t ret = freeMemAddr;
+    unsigned int ret = freeMemAddr;
 	freeMemAddr += size;
 	return ret;
 }
