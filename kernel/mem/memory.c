@@ -5,7 +5,7 @@
 #define INDEX_FROM_BIT(b) (b / 0x20)
 #define OFFSET_FROM_BIT(b) (b % 0x20)
 
-extern void *end;
+void *end;
 uint32_t *frames;
 uint32_t nframes;
 uintptr_t placementPointer = (uintptr_t)&end;
