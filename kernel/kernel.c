@@ -1,14 +1,13 @@
 #include "./lib/stdbase.h"
 #include "./lib/types.h"
 #include "./lib/multiboot.h"
-#include "./lib/string.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
 extern void load_idt(uintptr_t *idt_ptr);
 
 struct IDTEntry IDT[IDT_SIZE];
-struct multiboot *mboot = NULL;
+struct Multiboot *mboot = NULL;
 
 void IdtInit(void) 
 {
@@ -43,11 +42,15 @@ void IdtInit(void)
 
 void entry_point()
 {
-    const char *os_name = "OpenDelta v0.1-a\n";
-    const char *kern_name = "dltkernel v0.0.6-p\n";
+    const char *welcome = "Welcome to the OpenDelta!\n";
+    const char *os_name = "OS: OpenDelta v0.1-a\n";
+    const char *kern_name = "Kernel: dltkernel v0.0.7-p\n";    
+
+    prints(welcome, CYAN);
     prints(os_name, WHITE);
     prints(kern_name, WHITE);
     prints("Initializing IDT\n", WHITE);
+
     IdtInit();
 }
 
@@ -55,7 +58,7 @@ void kmain()
 {
     while (TRUE) {
         entry_point();
-        for (volatile uint32_t i = 0; i < 10000000; i++) {
+        for (volatile uint32_t i = 0; i < 10000; i++) {
             __asm__ __volatile__ ("hlt");
         }
     }
