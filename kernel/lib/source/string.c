@@ -32,7 +32,7 @@ int strcmp(const char *stra, const char *strb)
 	return stra[i] - strb[i];
 }
 
-int strncmp(const char *cs, const char *ct, size_t n) 
+int strncmp(const char *cs, const char *ct, unsigned int n) 
 {
     for (n = 0; cs[n] == ct[n]; n++) {
         if (cs[n] == ct[n]) {
@@ -50,21 +50,21 @@ int strncmp(const char *cs, const char *ct, size_t n)
     }
 }
 
-size_t strlen(const char *str)
+unsigned int strlen(const char *str)
 {
-	size_t len = 0;
+	unsigned int len = 0;
 	while(str[len]) {
 		len++;
 	}
 	return len;
 }
 
-size_t strnlen(const char *s, size_t maxlen)
+unsigned int strnlen(const char *str, unsigned int maxlen)
 {
 	size_t len;
 
-	for(len = 0; len < maxlen; len++, s++) {
-		if(!*s) {
+	for(len = 0; len < maxlen; len++, str++) {
+		if(!*str) {
 			break;
 		}
 	}
@@ -87,9 +87,9 @@ char *strcat(char *dest, const char *src)
 	return dest;
 }
 
-char *strncpy(char *s1, const char *s2, size_t n)
+char *strncpy(char *s1, const char *s2, unsigned int n)
 {
-	size_t size = strnlen(s2, n);
+	unsigned int size = strnlen(s2, n);
 	if(size != n) {
 		memset(s1 + size, '\0', n - size);
 	}	
@@ -146,7 +146,7 @@ void hex_to_ascii(int n, char str[])
 }
 
 // These functions need to be built out
-size_t s_vasprintf(char *buf, const char *fmt)//, va_list args)
+unsigned int s_vasprintf(char *buf, const char *fmt)//, va_list args)
 {
 	return 1;
 }
