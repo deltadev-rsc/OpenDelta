@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/unistd.h>
-#include "lib/files.h"
-#include "lib/simple_comms.h"
+#include "cmdlib/files.h"
+#include "cmdlib/simple_comms.h"
 #include "lib/colors.h"
 
 /* constants */
