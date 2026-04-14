@@ -5,15 +5,7 @@
 #include <sys/unistd.h>
 #include "lib/files.h"
 #include "lib/simple_comms.h"
-
-/* colors */
-#define T_RED "\033[38;2;255;0;0m"
-#define T_GREEN "\033[38;2;0;255;0m"
-#define T_BLUE "\033[38;2;0;0;255m"
-#define T_YELLOW "\033[38;2;255;255;0m"
-#define T_CYAN "\033[38;2;0;255;255m"
-#define T_RESET "\033[0m"
-#define T_MAGENTA "\033[0;35m"
+#include "lib/colors.h"
 
 /* constants */
 #define MAX_LINES 512
@@ -74,17 +66,6 @@ void your_version()
     printf(T_CYAN "[actualy dltsh version]: %s" T_RESET, *ver.v_0_0_12_c);
 }
 
-void editorLogo()
-{
-    printf(T_MAGENTA "████████        ███████     █       █   ██  ████████        ███████\n" T_RESET);
-    printf(T_MAGENTA "██     ██      ██     ██    ██     ██       ██     ██      ██     ██\n" T_RESET);
-    printf(T_MAGENTA "██      ██    ██       ██    ██   ██    ██  ██      ██    ██       ██\n" T_RESET);
-    printf(T_MAGENTA "██       ██  ██         ██    █████     ██  ██       ██  ██         ██\n" T_RESET);
-    printf(T_MAGENTA "██       ██  █████████████   ██   ██    ██  ██       ██  █████████████\n" T_RESET);
-    printf(T_MAGENTA "██      ██    ██            ██     ██   ██  ██      ██    ██\n" T_RESET);
-    printf(T_MAGENTA "█████████      ██████████   █       █   ██  █████████      ██████████\n" T_RESET);
-}
-
 // for editor
 void addFile(char fileName[MFNL])
 {
@@ -99,6 +80,17 @@ void addFile(char fileName[MFNL])
         fclose(file);
         isCreated = 1;
     }
+}
+
+void editorLogo()
+{
+    printf(T_MAGENTA "████████        ███████     █       █   ██  ████████        ███████\n" T_RESET);
+    printf(T_MAGENTA "██     ██      ██     ██    ██     ██       ██     ██      ██     ██\n" T_RESET);
+    printf(T_MAGENTA "██      ██    ██       ██    ██   ██    ██  ██      ██    ██       ██\n" T_RESET);
+    printf(T_MAGENTA "██       ██  ██         ██    █████     ██  ██       ██  ██         ██\n" T_RESET);
+    printf(T_MAGENTA "██       ██  █████████████   ██   ██    ██  ██       ██  █████████████\n" T_RESET);
+    printf(T_MAGENTA "██      ██    ██            ██     ██   ██  ██      ██    ██\n" T_RESET);
+    printf(T_MAGENTA "█████████      ██████████   █       █   ██  █████████      ██████████\n" T_RESET);
 }
 
 void editor()
@@ -117,6 +109,7 @@ void editor()
     printf(T_CYAN "[Введите имя файла для редактирования]: " T_RESET);
     scanf("%s", filename);
     getchar();
+    addFile(filename);
 
     file = fopen(filename, "r");
     if (file == NULL) {
@@ -200,3 +193,4 @@ void print_fetch()
 }
 
 #endif
+
