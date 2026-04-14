@@ -1,8 +1,13 @@
-#ifndef SCRIPT_LANG_H
-#define SCRIPT_LANG_H
-
 #ifndef DLTSH_H
 #define DLTSH_H
+
+#include <stdio.h>
+
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
 
 #if !defined (DLTSH_H)
 #define (DLTSH_H)
@@ -101,6 +106,17 @@ struct user_info {
     char *home_dir;
 };
 
+extern struct user_info current_user;
+
+#define HEREDOC_MAX 16
+
+typedef struct _sh_input_line_state_t {
+    char *input_line;
+    size_t input_line_index;
+    size_t input_line_size;
+    size_t input_line_len;
+} sh_input_line_state_t;
+
 /*---for-language---*/
 #define MAX_STRING_TYPE_LENGTH 1024
 #define MAX_CHAR_TYPE_LENGTH 512
@@ -153,12 +169,15 @@ typedef struct {
     const char *character_type[MAX_CHAR_TYPE_LENGTH];
     const char *integer_type[MAX_INT_TYPE_LENGTH];
     const char *bool_type[MAX_BOOL_TYPE_LENGTH];
-} TypesNames; 
+} TypesNames;
 
 void set_keyword();
 void set_symbols();
 void set_values();
 void set_types();
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif
