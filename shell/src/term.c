@@ -5,10 +5,10 @@
 #include <unistd.h>
 #include <sys/unistd.h>
 #include <sys/types.h>
-#include "lib/commands.h"
-#include "lib/simple_comms.h"
-#include "lib/files.h"
-#include "lib/dltsh.h"
+#include "cmdlib/commands.h"
+#include "cmdlib/simple_comms.h"
+#include "cmdlib/files.h"
+#include "lib/dltsh_base.h"
 #include "lib/colors.h"
 
 /* constants */
