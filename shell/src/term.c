@@ -8,15 +8,8 @@
 #include "lib/commands.h"
 #include "lib/simple_comms.h"
 #include "lib/files.h"
-#include "lib/dltsh_base.h"
-
-#define T_RED "\033[38;2;255;0;0m"
-#define T_GREEN "\033[38;2;0;255;0m"
-#define T_BLUE "\033[38;2;0;0;255m"
-#define T_YELLOW "\033[38;2;255;255;0m"
-#define T_CYAN "\033[38;2;0;255;255m"
-#define T_RESET "\033[0m"
-#define T_MAGENTA "\033[0;35m"
+#include "lib/dltsh.h"
+#include "lib/colors.h"
 
 /* constants */
 #define MCL 255 // Максимальная длинна строки
@@ -49,6 +42,10 @@ int main(void)
         printf("$ > ");
         if (scanf("%255s", console.command) != 1) {
             fprintf(stderr, T_RED "[err]: [ошибка ввода команды!]\n" T_RESET);
+        }
+
+        else if (strcmp(console.command, "rust-calc") == 0) {
+             system("~/OpenDelta/shell/bin/calc");
         }
 
         else if (strcmp(console.command, "calc") == 0) {
@@ -113,28 +110,23 @@ int main(void)
             help();
         }
 
-        else if (strcmp(console.command, "cls") == 0) {
+        else if (strcmp(console.command, "clear") == 0) {
             system("clear");
         }
 
         else if (strcmp(console.command, "clocks") == 0) {
-            system("~/open-delta/kernel/shell/bin/clock");
+            system("~/OpenDelta/shell/bin/clock");
         }
 
-        else if (strcmp(console.command, "lsf") == 0) {
-            printf(T_CYAN "[все файлы для работы ОС]\n" T_RESET);
-            files();
-        }
-
-        else if (strcmp(console.command, "list") == 0 ) {
+        else if (strcmp(console.command, "ls") == 0 ) {
             list();
         }
 
-        else if (strcmp(console.command, "std") == 0) {
+        else if (strcmp(console.command, "pwd") == 0) {
             showThisDir();
         }
 
-        else if (strcmp(console.command, "gtd") == 0) {
+        else if (strcmp(console.command, "cd") == 0) {
             const char *dirPath = *console.folderName;
             goToDir(dirPath);
         }
@@ -142,31 +134,36 @@ int main(void)
         else if (strcmp(console.command, "add") == 0) {
             const char *flag[3];
             const char *name[MFNL];
-            system("python3 ~/open-delta/scripts/shell/add-file.py");
+            system("python3 ~/OpenDelta/scripts/shell/add-file.py");
         }
 
-        else if (strcmp(console.command, "add-file") == 0) {
+        else if (strcmp(console.command, "dexide") == 0) {
+            system("clear");
+            system("~/OpenDelta/shell/bin/dexide");
+        }
+
+        else if (strcmp(console.command, "touch") == 0) {
             printf(T_CYAN "[добавление файла]\n" T_RESET);
             char fileName[256];
             add_file(fileName);
         }
 
-        else if (strcmp(console.command, "add-dir") == 0) {
+        else if (strcmp(console.command, "mkdir") == 0) {
             printf(T_CYAN "[добавление папки]\n" T_RESET);
             add_dir();
         }
 
-        else if (strcmp(console.command, "del") == 0) {
+        else if (strcmp(console.command, "rm") == 0) {
             printf(T_CYAN "[удаление файла]\n" T_RESET);
             del();
         }
 
-        else if (strcmp(console.command, "dcf") == 0) {
+        else if (strcmp(console.command, "cat") == 0) {
             printf(T_CYAN "[содержимое файла]\n" T_RESET);
             displayFile(console.fileName);
         }
 
-        else if (strcmp(console.command, "quit") == 0) {
+        else if (strcmp(console.command, "exit") == 0) {
             printf(T_GREEN "[завершение программы]\n" T_RESET);
             break;
         }
