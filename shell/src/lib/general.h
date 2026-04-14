@@ -1,8 +1,8 @@
 #ifndef DLTSH_GENERAL_H
 #define DLTSH_GENERAL_H
 
-#include "dltshtypes.h"
-#include "chartypes.h"
+#include "types/dltshtypes.h"
+#include "types/chartypes.h"
 
 #pragma once
 
