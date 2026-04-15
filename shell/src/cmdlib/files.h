@@ -41,6 +41,7 @@ typedef struct {
 void add_file(char fileName[MFNL]);
 void add_dir();
 void del();
+void _remove(char *flag, char *name);
 void displayFile(const char *fileName);
 void showThisDir();
 void goToDir(const char *path);
