@@ -5,21 +5,23 @@ use std::fs::File;
 use std::io::{self, Write, BufRead, BufReader};
 
 const MAX_LINES: usize = 512;
-const MAX_LINE_LENGTH: usize = 1024;
 
 const T_CYAN: &str = "\x1b[36m";
 const T_RESET: &str = "\x1b[0m";
 const T_YELLOW: &str = "\x1b[33m";
 const T_RED: &str = "\x1b[31m";
+const T_GREEN: &str = "\x1b[32m";
+const T_BLUE: &str = "\x1b[34m";
+const T_MAGENTA: &str = "\x1b[35m";
 
 pub fn editor_logo() {
-    println!("████████        ███████     █       █   ██  ████████        ███████    ");
-    println!("██     ██      ██     ██    ██     ██       ██     ██      ██     ██   ");
-    println!("██      ██    ██       ██    ██   ██    ██  ██      ██    ██       ██  ");
-    println!("██       ██  ██         ██    █████     ██  ██       ██  ██         ██ ");
-    println!("██       ██  █████████████   ██   ██    ██  ██       ██  █████████████ ");
-    println!("██      ██    ██            ██     ██   ██  ██      ██    ██           ");
-    println!("█████████      ██████████   █       █   ██  █████████      ██████████  ");
+    println!("{}████████        ███████     █       █   ██  ████████        ███████    {}", T_MAGENTA, T_RESET);
+    println!("{}██     ██      ██     ██    ██     ██       ██     ██      ██     ██   {}", T_MAGENTA, T_RESET);
+    println!("{}██      ██    ██       ██    ██   ██    ██  ██      ██    ██       ██  {}", T_MAGENTA, T_RESET);
+    println!("{}██       ██  ██         ██    █████     ██  ██       ██  ██         ██ {}", T_MAGENTA, T_RESET);
+    println!("{}██       ██  █████████████   ██   ██    ██  ██       ██  █████████████ {}", T_MAGENTA, T_RESET);
+    println!("{}██      ██    ██            ██     ██   ██  ██      ██    ██           {}", T_MAGENTA, T_RESET);
+    println!("{}█████████      ██████████   █       █   ██  █████████      ██████████  {}", T_MAGENTA, T_RESET);
 }
 
 fn display_file(file_name: &str) -> io::Result<()> {
