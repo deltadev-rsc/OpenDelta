@@ -8,7 +8,7 @@
 #include "cmdlib/commands.h"
 #include "cmdlib/simple_comms.h"
 #include "cmdlib/files.h"
-#include "lib/dltsh_base.h"
+#include "lib/dltsh.h"
 #include "lib/colors.h"
 
 /* constants */
@@ -23,6 +23,7 @@ struct console {
     unsigned int numberOfCommands;
     char *fileName;
     char *folderName[MAX_PATH_LENGTH];
+    char *flag;
 };
 
 int main(void)
@@ -44,8 +45,8 @@ int main(void)
             fprintf(stderr, T_RED "[err]: [ошибка ввода команды!]\n" T_RESET);
         }
 
-        else if (strcmp(console.command, "rust-calc") == 0) {
-             system("~/OpenDelta/shell/bin/calc");
+        else if (strcmp(console.command, "calcrs") == 0) {
+             system("~/open-delta/kernel/shell/bin/calc");
         }
 
         else if (strcmp(console.command, "calc") == 0) {
@@ -115,7 +116,7 @@ int main(void)
         }
 
         else if (strcmp(console.command, "clocks") == 0) {
-            system("~/OpenDelta/shell/bin/clock");
+            system("~/open-delta/kernel/shell/bin/clock");
         }
 
         else if (strcmp(console.command, "ls") == 0 ) {
@@ -134,12 +135,12 @@ int main(void)
         else if (strcmp(console.command, "add") == 0) {
             const char *flag[3];
             const char *name[MFNL];
-            system("python3 ~/OpenDelta/scripts/shell/add-file.py");
+            system("python3 ~/open-delta/scripts/shell/add-file.py");
         }
 
         else if (strcmp(console.command, "dexide") == 0) {
             system("clear");
-            system("~/OpenDelta/shell/bin/dexide");
+            system("~/open-delta/kernel/shell/bin/dexide");
         }
 
         else if (strcmp(console.command, "touch") == 0) {
@@ -154,8 +155,8 @@ int main(void)
         }
 
         else if (strcmp(console.command, "rm") == 0) {
-            printf(T_CYAN "[удаление файла]\n" T_RESET);
-            del();
+            char *name;
+            _remove(console.flag, name);
         }
 
         else if (strcmp(console.command, "cat") == 0) {
