@@ -82,7 +82,7 @@ void add_dir()
 /* display content in file */
 void displayFile(const char *fileName)
 {
-    
+
     file_explorer var;
     var.file = NULL;
     var.isDisplaying = 0;
@@ -108,7 +108,39 @@ void displayFile(const char *fileName)
     var.isDisplaying = 0;
 }
 
-/* delete file */
+/*переписанная функция del() которая пока что не работает*/
+void _remove(char *flag, char *name)
+{
+    file_explorer var;
+
+    if (!flag || !name) {
+        printf(T_RED "[err]: [отсутствуют параметры для удаления!]\n" T_RESET);
+        return;
+    }
+    
+    if (strcmp(flag, "-f") == 0) {
+        if (remove(name) == 0) {
+            printf(T_GREEN "[файл '%s' успешно удалён!]\n" T_RESET, name);
+        }
+        else {
+            printf(T_RED "[ошибка удаления файла: &s]\n" T_RESET, name);
+        }
+    }
+
+    else if (strcmp(flag, "-d") == 0) {
+        if (rmdir(name) == 0) {
+            printf(T_GREEN "[директория '%s' успешно удалена!]\n" T_RESET, name);
+        }
+        else {
+            printf(T_RED "[ошибка удаления директории: %s]\n" T_RESET);
+        }
+    }
+    
+    else {
+        printf(T_RED "[err]: [неизвестный флаг: %s]\n" T_RESET, flag);
+    }
+}
+
 void del()
 {
     file_explorer var;
@@ -195,4 +227,3 @@ void list()
 
     closedir(dr);
 }
-
