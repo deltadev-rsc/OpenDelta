@@ -106,9 +106,10 @@ int main(void)
         }
 
         else if (strcmp(console.command, "help") == 0) {
-            console.numberOfCommands = 13;
-            printf(T_CYAN "[всего команд]: '%d'\n" T_RESET, console.numberOfCommands);
-            help();
+//            console.numberOfCommands = 13;
+  //          printf(T_CYAN "[всего команд]: '%d'\n" T_RESET, console.numberOfCommands);
+    //        help();
+            system("~/open-delta/kernel/shell/bin/table");            
         }
 
         else if (strcmp(console.command, "clear") == 0) {
