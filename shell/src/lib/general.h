@@ -4,6 +4,8 @@
 #include "types/dltshtypes.h"
 #include "types/chartypes.h"
 #include "types/xmalloc.h"
+#include "dltsh.h"
+#include "stdc.h"
 #include <cstdint>
 
 #if defined (HAVE_SYS_RESOURCE_H) && defined (RLIMTYPE)
