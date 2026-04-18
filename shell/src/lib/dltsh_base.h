@@ -9,42 +9,6 @@
 extern "C" {
 #endif 
 
-#if !defined (DLTSH_H)
-#define (DLTSH_H)
-
-    #if !defined (RHAPSODY) && !defined (MACOSX)
-        #define HOST_TYPE CONF_HOST_TYPE
-        #define OS_TYPE CONF_OS_TYPE
-        #define MARCHTYPE CONF_MARCH_TYPE
-    #else
-        #if defined (__powerpc__) || defined (__ppc__)
-            #define HOST_TYPE "powerpc"
-        #elif defined (__i386__)
-            #define HOST_TYPE "i386"
-        #else
-            #define HOST_TYPE CONF_HOST_TYPE
-        #endif
-    #endif
-
-    #define OS_TYPE CONF_OS_TYPE
-    #define VENDOR CONF_VENDOR
-
-    #define MARCH_TYPE HOST_TYPE "-" VENDOR "-" OS_TYPE
-
-#endif
-
-#ifndef HOST_TYPE
-    #define HOST_TYPE "unknown"
-#endif
-
-#ifndef OS_TYPE
-    #define OS_TYPE "unknown"
-#endif
-
-#ifndef MARCH_TYPE
-    #define MARCH_TYPE "unknown"
-#endif
-
 extern int EOF_Reached;
 
 #define NO_PIPE         -1
@@ -95,6 +59,49 @@ extern int shell_compatibility_level;
 
 extern int locale_mb_cur_max;
 
+enum r_instruction {
+  r_output_direction, r_input_direction, r_inputa_direction,
+  r_appending_to, r_reading_until, r_reading_string,
+  r_duplicating_input, r_duplicating_output, r_deblank_reading_until,
+  r_close_this, r_err_and_out, r_input_output, r_output_force,
+  r_duplicating_input_word, r_duplicating_output_word,
+  r_move_input, r_move_output, r_move_input_word, r_move_output_word,
+  r_append_err_and_out
+};
+
+#define REDIR_VARASSIGN		0x01
+
+#define AMBIGUOUS_REDIRECT  -1
+#define NOCLOBBER_REDIRECT  -2
+#define RESTRICTED_REDIRECT -3	
+#define HEREDOC_REDIRECT    -4 
+#define BADVAR_REDIRECT	    -5
+
+#define CLOBBERING_REDIRECT(ri) \
+  (ri == r_output_direction || ri == r_err_and_out)
+
+#define OUTPUT_REDIRECT(ri) \
+  (ri == r_output_direction || ri == r_input_output || ri == r_err_and_out || ri == r_append_err_and_out)
+
+#define INPUT_REDIRECT(ri) \
+  (ri == r_input_direction || ri == r_inputa_direction || ri == r_input_output)
+
+#define WRITE_REDIRECT(ri) \
+  (ri == r_output_direction || \
+	ri == r_input_output || \
+	ri == r_err_and_out || \
+	ri == r_appending_to || \
+	ri == r_append_err_and_out || \
+	ri == r_output_force)
+
+#define TRANSLATE_REDIRECT(ri) \
+  (ri == r_duplicating_input_word || ri == r_duplicating_output_word || \
+   ri == r_move_input_word || ri == r_move_output_word)
+
+enum command_type { cm_for, cm_case, cm_while, cm_if, cm_simple, cm_select,
+		    cm_connection, cm_function_def, cm_until, cm_group,
+		    cm_arith, cm_cond, cm_arith_for, cm_subshell, cm_coproc };
+
 struct fd_bitmap {
     int size;
     char *bitmap;
@@ -106,9 +113,28 @@ struct user_info {
     char *home_dir;
 };
 
+typedef struct word_desc {
+    char *word;
+    int flags;
+} WORD_DESC;
+
+typedef struct word_list {
+    struct word_list *next;
+    WORD_DESC *word;
+} WORD_LIST;
+
 extern struct user_info current_user;
 
 #define HEREDOC_MAX 16
+
+typedef struct _sh_parser_state_t {
+    int parser_state;
+    int *token_state;
+    char *token;
+    int token_buf_size;
+    int input_line_terminator;
+    int eof_encountered;
+} sh_parser_state_t;
 
 typedef struct _sh_input_line_state_t {
     char *input_line;
