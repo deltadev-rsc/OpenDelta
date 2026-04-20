@@ -6,7 +6,6 @@
 #include "types/xmalloc.h"
 #include "dltsh.h"
 #include "stdc.h"
-#include <cstdint>
 
 #if defined (HAVE_SYS_RESOURCE_H) && defined (RLIMTYPE)
     #if defined (HAVE_SYS_TIME_H)
