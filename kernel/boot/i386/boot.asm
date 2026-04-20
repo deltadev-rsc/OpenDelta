@@ -10,23 +10,24 @@
 %include "boot/i386/print_hex.asm"
 %include "boot/i386/mboot_tables.asm"
 %include "boot/i386/fat_header.asm"
+%include "boot/i386/const.asm"
 
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
 
 ; data, strings, messages...
 section .data
-    str_real: dw "Started in 16-bit real mode", ENDL, 0
-    str_pmode: dw "Landed in 32-bit prorected mode", ENDL, 0
-    str_load: dw "Loading dltkernel from the disk", ENDL, 0
+    str_real dw "Started in 16-bit real mode", ENDL, 0
+    str_pmode dw "Landed in 32-bit protected mode", ENDL, 0
+    str_load dw "Loading dltkernel from the disk", ENDL, 0
     
     boot_drive db 0x0
     boot_part_seg dw 0
     boot_part_off dw 0
     
     ; errors
-    str_returned_kernel: dw "Returned from kernel. Error?", 0
-    str_read_fail: dw "[err]: [read failed!]", 0
+    str_returned_kernel dw "Returned from kernel. Error?", 0
+    str_read_fail dw "[err]: [read failed!]", 0
 
 ; main and important variably for starting program
 section .text
@@ -57,7 +58,6 @@ _start:
     call print
     call print_nl
 
-    call load_gdt
     call load_kernel
     call switch
 
@@ -77,9 +77,9 @@ load_kernel:
     ret
 
 [bits 32]
-begin_pm:
+protected_mode:
     mov ebx, str_pmode
-    mov ax, 0x10 
+    mov ax, 10h 
     mov bx, 0x100000
     mov ds, ax
     mov ss, ax
@@ -92,7 +92,11 @@ begin_pm:
     mov dx, [boot_part_off]
     push edx 
 
+    xor eax, eax
+    xor ebx, ebx
+    xor ecx, ecx
     xor edx, edx
+    xor edi, edi
     mov dl, [boot_drive]
     push edx
     call _start 
