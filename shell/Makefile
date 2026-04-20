@@ -12,3 +12,5 @@ run:
 
 clean:
 	rm -f bin/dltsh
+
+.PHONY: build run clean all
