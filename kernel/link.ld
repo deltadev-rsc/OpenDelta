@@ -5,22 +5,22 @@ phys = 0x100000;
 
 PHDRS
 {
-    text PT_LOAD FLAGS(5); 
+    text PT_LOAD FLAGS(5);
     data PT_LOAD FLAGS(6);
 }
 
-SECTIONS 
+SECTIONS
 {
     . = phys;
 
     .multiboot ALIGN(4) : {
         KEEP(*(.multiboot))
-    } :text 
+    } :text
 
     .fsjump : { *(.fsjump) }
     .fsheaders : { *(.fsheaders) }
 
-    .text : { 
+    .text : {
         __text_start = .;
         *(.text)
         *(.text*)
@@ -42,13 +42,19 @@ SECTIONS
         *(.rodata)
         *(.rodata*)
     } :data
-   
-    .bss  : { 
+
+    .bss  : {
         __bss_start = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
-    } :data 
+    } :data
+
+    .heap : {
+        _heap_start = .;
+        . = . + 32 * 1024 * 1024;
+        _heap_end = .;
+    } :data
 
     __end = .;
 }
