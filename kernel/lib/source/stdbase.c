@@ -2,6 +2,13 @@
 #include "../types.h"
 #include "../string.h"
 
+FILE _iob[OPEN_MAX];
+static Header base;
+static Header *freep = NULL;
+static char *dataStart = (char *)0x100000;
+static char *dataEnd = &dataStart;
+uint32_t freeMemAddr = 0x10000;
+
 int _fillbuf(FILE *stream)
 {
     if (stream->cnt > 0) {
@@ -48,14 +55,6 @@ int _flushbuf(int c, FILE *stream)
 
     return c;
 }
-
-extern FILE _iob[OPEN_MAX];
-
-static Header base;
-static Header *freep = NULL;
-static char *dataStart = (char *)0x100000;
-static char *dataEnd = &dataStart;
-uint32_t freeMemAddr = 0x10000;
 
 char sbrk(int incr)
 {
@@ -176,19 +175,19 @@ uint8_t inb(uint16_t port) {
     return ret;
 }
 
-void prints(const char *str, Colors color)
+void prints(const char *fmt, Colors color, ...)
 {
     char *video_mem = (char *)0xb8000;
     int i = 0;
     int pos = 0;
-    while (str[i] != '\0') {
+    while (fmt[i] != '\0') {
 
-        if (str[i] == '\n') {
+        if (fmt[i] == '\n') {
             pos = ((pos / 80) + 1) * 80;
         }
 
         else {
-            video_mem[2*pos] = str[i];
+            video_mem[2*pos] = fmt[i];
             video_mem[2*pos + 1] = (char)color;
             pos++;
         }
@@ -253,7 +252,6 @@ void fcopy(FILE *ifp, FILE *ofp) {
     }
 }
 
-/*
 int getline(char *line, int max)
 {
     if (fgets(line, max, stdin) == NULL) {
@@ -263,4 +261,3 @@ int getline(char *line, int max)
         return strlen(line);
     }
 }
-*/
