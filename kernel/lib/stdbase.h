@@ -145,7 +145,7 @@ int getline(char *line, int max);
 /*---input-output---*/
 uint8_t inb(uint16_t port);
 void outb(uint16_t port, uint8_t val);
-void prints(const char *str, unsigned int color);
+void prints(const char *fmt, unsigned int color, ...);
 void kprint(const char *str, unsigned int color);
 void kprintnl(void);
 
