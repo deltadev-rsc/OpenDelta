@@ -1,4 +1,4 @@
-.int15:
+int15:
 	mov eax, 0xE820
 	xor ebx, ebx
 	mov ecx, 24
