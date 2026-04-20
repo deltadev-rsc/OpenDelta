@@ -1,6 +1,8 @@
 #include "./lib/stdbase.h"
 #include "./lib/types.h"
 #include "./lib/multiboot.h"
+#include "./lib/screen.h"
+#include "./mem/header/memory.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
@@ -8,6 +10,15 @@ extern void load_idt(uintptr_t *idt_ptr);
 
 struct IDTEntry IDT[IDT_SIZE];
 struct Multiboot *mboot = NULL;
+
+static void panic(const char *panic_msg) {
+    prints("KERNEL PANIC: ", WHITE);
+    prints(panic_msg, WHITE);
+    prints("\n", WHITE);
+    for (;;) { 
+        __asm__ volatile ( "hlt" );
+    }
+}
 
 void IdtInit(void) 
 {
@@ -40,21 +51,35 @@ void IdtInit(void)
     load_idt(idt_ptr);
 }
 
-void entry_point()
+void entry_point(void)
 {
     const char *welcome = "Welcome to the OpenDelta!\n";
     const char *os_name = "OS: OpenDelta v0.1-a\n";
     const char *kern_name = "Kernel: dltkernel v0.0.7-p\n";    
+
+    clearScreen();
 
     prints(welcome, CYAN);
     prints(os_name, WHITE);
     prints(kern_name, WHITE);
     prints("Initializing IDT\n", WHITE);
 
+    delay();
+
+    __asm__ volatile ( "int $2" );
+    __asm__ volatile ( "int $3" );
+
     IdtInit();
+
+    mboot_ptr = mboot;
+    paggingInstall(mboot_ptr->mem_upper + mboot_ptr->mem_lower);
+    heapInstall();
+    delay();
+
+    return;
 }
 
-void kmain()
+void kmain(void)
 {
     while (TRUE) {
         entry_point();
