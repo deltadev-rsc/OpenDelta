@@ -1,9 +1,12 @@
 [bits 32]
-   
+
 section .data
     nl db 'W', 0x0A
 
 section .text 
+    extern entry_point
+    extern kmain
+
     align 4
     dd 0x1BADB002
     dd 0x00
@@ -13,9 +16,6 @@ global _start
 global readp  ; read port 
 global writep ; write port
 global load_idt
-
-extern entry_point
-extern kmain
 
 readp:
     mov edx, [esp + 4]
@@ -59,10 +59,20 @@ stack_space:
 
 [bits 64]
 long_mode_entry:
-    mov ax, 0x10
+    mov ax, 0x10000
     mov ds, ax
     mov es, ax
     mov ss, ax
+    mov gs, ax
+    mov ss, ax
+
+    cli 
+
+    xor rax, rax 
+    xor rbx, rbx
+    xor rcx, rcx
+    xor rdx, rdx
+    xor rdi, rdi
 
     lea rsp, [rel stack64_top]
     and rsp, -16
@@ -75,7 +85,7 @@ long_mode_entry:
     jmp .hang64
 
 section .bss
-align 16
+align 32
 stack64_bottom:
     resb 65536
 stack64_top:
