@@ -38,9 +38,9 @@ int main(void)
 
     while (true) {
 
-        printf("user@host");
-        printf(T_BLUE "~" T_RESET);
-        printf("$ > ");
+        printf("$: %s", T_BLUE "~" T_RESET);
+        printf("> ");
+
         if (scanf("%255s", console.command) != 1) {
             fprintf(stderr, T_RED "[err]: [ошибка ввода команды!]\n" T_RESET);
         }
