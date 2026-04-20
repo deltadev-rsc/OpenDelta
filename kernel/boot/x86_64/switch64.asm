@@ -1,4 +1,4 @@
-.switch_longmode:
+switch_longmode:
 	mov di, PAGE_TABLE_BUFFER
 	push di
 
