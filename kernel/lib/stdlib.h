@@ -2,7 +2,13 @@
 #ifndef STDLIB_H
 #define STDLIB_H
 
+#pragma once
+
 #include "./types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAXLINE 1000
 
@@ -21,14 +27,19 @@ int trim(char s[]);
 
 int islower(int c);
 
+void itoa(int n, char s[]);
+void reverse(char s[]);
 void swap(void *v[], int i, int j);
 void copy(void);
 void shellSort(int v[], int n);
 void squeeze(char s[], int c);
-void reverse(char s[]);
 
 int bitcount(unsigned x);
 int binsearch(int x, int v[], int n);
 unsigned getbits(unsigned x, int p, int n);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
