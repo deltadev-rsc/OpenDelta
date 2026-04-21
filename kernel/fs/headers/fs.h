@@ -104,6 +104,16 @@ typedef struct fs_node {
 	selectwait_type_t selectwait;
 } fs_node_t;
 
+typedef struct {
+    char name[2048];
+    char extension[512];
+    int16_t parent;
+    uint16_t first_cluster;
+    uint32_t size;
+    uint8_t used;
+    uint8_t is_dir;
+} fs_entry_t;
+
 struct Dirent {
 	uint32_t ino;
 	char name[256];
