@@ -109,10 +109,8 @@ void displayFile(const char *fileName)
 }
 
 /*переписанная функция del() которая пока что не работает*/
-void _remove(char *flag, char *name)
+void _remove(const char *flag, const char *name)
 {
-    file_explorer var;
-
     if (!flag || !name) {
         printf(T_RED "[err]: [отсутствуют параметры для удаления!]\n" T_RESET);
         return;
@@ -123,7 +121,8 @@ void _remove(char *flag, char *name)
             printf(T_GREEN "[файл '%s' успешно удалён!]\n" T_RESET, name);
         }
         else {
-            printf(T_RED "[ошибка удаления файла: &s]\n" T_RESET, name);
+            perror(T_RED "[ошибка удаления файла!]\n");
+            printf(T_RESET);
         }
     }
 
@@ -132,7 +131,8 @@ void _remove(char *flag, char *name)
             printf(T_GREEN "[директория '%s' успешно удалена!]\n" T_RESET, name);
         }
         else {
-            printf(T_RED "[ошибка удаления директории: %s]\n" T_RESET);
+            perror(T_RED "[ошибка удаления директории]\n");
+            printf(T_RESET);
         }
     }
     
