@@ -33,6 +33,10 @@ int main(void)
     set_values();
     set_types();
 
+
+    const char *argc[128];
+    const char *argv[128];
+
     welcome();
     struct console console;
 
@@ -156,8 +160,13 @@ int main(void)
         }
 
         else if (strcmp(console.command, "rm") == 0) {
-            char *name;
-            _remove(console.flag, name);
+            if (argc < 3) {
+                printf(T_RED "[err]: [использование: rm [flag] [name] ]\n" T_RESET);
+                break;
+            }
+            const char *flag = argv[1]; 
+            const char *name = argv[2];
+            _remove(flag, name);
         }
 
         else if (strcmp(console.command, "cat") == 0) {
