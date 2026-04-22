@@ -14,12 +14,12 @@ switch_longmode:
 	mov di, PAGE_TABLE_BUFFER, 0x3000
 	mov ax, 0x03
     
-.pages_loop:
+pages_loop:
 	mov [di], eax
 	add eax, 0x100
 	add di, 8
 	cmp di, PAGE_TABLE_BUFFER + 0x4000
-	jl .pages_loop
+	jl pages_loop
 
 	mov al, 0xFF
 	out 0x21, al
