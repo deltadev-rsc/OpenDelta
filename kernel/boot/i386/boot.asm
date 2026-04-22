@@ -15,19 +15,18 @@
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
 
-; data, strings, messages...
 section .data
-    str_real dw "Started in 16-bit real mode", ENDL, 0
-    str_pmode dw "Landed in 32-bit protected mode", ENDL, 0
-    str_load dw "Loading dltkernel from the disk", ENDL, 0
+    str_real db "Started in 16-bit real mode", ENDL, 0x0
+    str_pmode db "Landed in 32-bit prorected mode", ENDL, 0x0
+    str_load db "Loading dltkernel from the disk", ENDL, 0x0
     
     boot_drive db 0x0
-    boot_part_seg dw 0
-    boot_part_off dw 0
+    boot_part_seg db 0x0
+    boot_part_off db 0x0
     
     ; errors
-    str_returned_kernel dw "Returned from kernel. Error?", 0
-    str_read_fail dw "[err]: [read failed!]", 0
+    str_returned_kernel db "Returned from kernel. Error?", 0x0
+    str_read_fail db "[err]: [read failed!]", 0x0
 
 ; main and important variably for starting program
 section .text
