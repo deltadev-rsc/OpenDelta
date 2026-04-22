@@ -1,11 +1,14 @@
 [bits 16]
-[org 0x7C00]
 
 %include "boot/x86_64/constants.asm"
 %include "boot/x86_64/int15.asm"
 %include "boot/x86_64/switch64.asm"
 
 section .data
+    str_real: dq "16-bit real mode"
+    str_pmode: dq "32-bit protected mode"
+    str_lmode: dq "64-bit long mode"
+
 	no_cpuid_str: dq "[ERR FATAL]: [CPU does not support CPUID.]"
 	no_longmode_str: dq "[ERR FATAL]: [CPU does not support long mode.]"
 
@@ -15,9 +18,9 @@ section .boot
     global 	init
 
 startup:
-	ljmp 0x10000, .flush_segments
+	ljmp 0x10000, flush_segments
 
-.flush_segments:
+flush_segments:
 	cld
 	mov sp, startup
 	xor ax, ax
@@ -30,8 +33,9 @@ startup:
 	mov bx, 0x7E00
 	mov cx, 0x0002
 	xor dh , dh
-	int 0x13
-.check_cpuid:
+	int 13h
+
+check_cpuid:
 	pushfd
 	pop eax
 	mov ecx, eax
@@ -43,46 +47,44 @@ startup:
 	push ecx
 	popfd
 	xor eax, ecx
-	jz .no_cpuid
+	jz no_cpuid
 
 	mov eax, 0x80000000
 	cpuid
 	cmp eax, 0x80000001
-	jz .no_longmode
+	jz no_longmode
 
 	mov ax, 0x2401
-	int 0x15
+	int 15h
 
 	mov ax, 0x03
-	int 0x10
+	int 10h
 
-.no_cpuid:
+no_cpuid:
 	mov si, no_cpuid_str
 	call printstr_rmode
 	cli
 	hlt
-.no_longmode:
+
+no_longmode:
 	mov si, no_longmode_str
 	call printstr_rmode
 	cli
 	hlt
-.printstr_rmode:
+
+printstr_rmode:
 	lodsb
 	test a1, a1
 	jz .done
 	mov ah, 0x0E
-	int 0x10
+	int 10h
 	jmp printstr_rmode
 .done:
 	ret
 
 dummy_IDT:
-	.word 0x00
-	.long 0x00
-
-disk: .byte 0x00
-.space 510 - (. - startup), 0
-dword 0xAA55
+	word 	0x00
+	qword 	0x00
 
 [bits 64]
 long_mode:
@@ -114,16 +116,21 @@ syscall_handler:
 
 GDT:
 .null:
-	.quad 0x00
+	qword 0x00
 .kcode:
-	.quad 0x00209A0000000000
+	qword 0x00209A0000000000
 .kdata
-	.quad 0x0000920000000000
+	qword 0x0000920000000000
 .ucode:
-	.quad 0x0000FA0000000000
+	qword 0x0000FA0000000000
 .udata:
-	.quad 0x0000F20000000000
+	qword 0x0000F20000000000
 GDT_END:
 GDT_PTR:
-	.word GDT_END - GDT - 1
-	.qword GDT
+	word GDT_END - GDT - 1
+	dword GDT
+
+
+disk: byte 0x00
+times 510 - (. - startup), 0
+dword 0xAA55
