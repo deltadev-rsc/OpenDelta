@@ -6,7 +6,7 @@ int15:
 	mov di, MEMORY_MAP_BUFFER
 	movb [di + 20], 0x01
 	xor bp, bp
-	int 0x15
+	int 15h
 	jc .int15_failed
 	mov edx, 0x0534D4150
 	cmp eax, edx
@@ -23,7 +23,7 @@ int15:
 	mov ax, 0xE820
 	movb [di + 20], 0x01
 	mov ecx, 24
-	int 0x15
+	int 15h
 	jc .int15_failed
 	mov edx, 0x0534D4150
 
@@ -40,9 +40,11 @@ int15:
 	jz .skip_entry
 	inc bp
 	add di, 24
+
 .skip_entry:
 	test ebx, ebx
 	jnz .int15_loop
+
 .int15_finished:
 	movw ax, [disk]
 	movw [MEMORY_MAP_ENTRY_COUNT], bp
