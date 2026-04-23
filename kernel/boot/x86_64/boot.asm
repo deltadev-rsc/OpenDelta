@@ -83,8 +83,8 @@ printstr_rmode:
 	ret
 
 dummy_IDT:
-	word 	0x00
-	qword 	0x00
+	dw 0x00
+	dq 0x00
 
 [bits 64]
 long_mode:
@@ -116,21 +116,21 @@ syscall_handler:
 
 GDT:
 .null:
-	qword 0x00
+	dq 0x00
 .kcode:
-	qword 0x00209A0000000000
+	dq 0x00209A0000000000
 .kdata
-	qword 0x0000920000000000
+	dq 0x0000920000000000
 .ucode:
-	qword 0x0000FA0000000000
+	dq 0x0000FA0000000000
 .udata:
-	qword 0x0000F20000000000
+	dq 0x0000F20000000000
 GDT_END:
 GDT_PTR:
-	word GDT_END - GDT - 1
-	dword GDT
+	dw GDT_END - GDT - 1
+	dd GDT
 
 
-disk: byte 0x00
+disk: db 0x00
 times 510 - (. - startup), 0
-dword 0xAA55
+dd 0xAA55
