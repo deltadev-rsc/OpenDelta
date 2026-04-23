@@ -3,6 +3,8 @@
 #include "./lib/multiboot.h"
 #include "./lib/screen.h"
 #include "./mem/header/memory.h"
+#include "./lib/tty.h"
+#include "./gdt/gdt.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
@@ -62,7 +64,7 @@ void entry_point(void)
     prints(welcome, CYAN);
     prints(os_name, WHITE);
     prints(kern_name, WHITE);
-    prints("Initializing IDT\n", WHITE);
+    prints("[info]: [Initializing IDT]\n", WHITE);
 
     delay();
 
@@ -71,9 +73,18 @@ void entry_point(void)
 
     IdtInit();
 
+    prints("[info]: [initializing i386 GDT]\n", WHITE);
+    i386_GDT_init();
+
+    delay();
+
     mboot_ptr = mboot;
     paggingInstall(mboot_ptr->mem_upper + mboot_ptr->mem_lower);
     heapInstall();
+    delay();
+
+    prints("[info]: [starting TTY]\n", WHITE);
+    terminalInit();
     delay();
 
     return;
