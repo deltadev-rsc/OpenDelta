@@ -4,7 +4,7 @@
 #include "./lib/screen.h"
 #include "./mem/header/memory.h"
 #include "./lib/tty.h"
-#include "./gdt/gdt.h"
+#include "./arch/gdt/gdt.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
