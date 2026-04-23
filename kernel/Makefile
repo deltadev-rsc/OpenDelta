@@ -28,6 +28,8 @@ PORTS = obj/ports.o
 PORTS_SRC = ports/ports.c
 TTY = obj/tty.o 
 TTY_SRC = tty/tty.c
+CTYPE = obj/ctype.o
+CTYPE_SRC = lib/source/ctype.c 
 
 # clang flags for build on i386
 FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
@@ -47,7 +49,7 @@ $(BOOT): $(BOOT_SRC)
 $(IDT): $(IDT_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(STRING) $(MEM) $(TYPES) $(TTY)
+$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE)
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
 
 $(ENTRY): $(ENTRY_SRC)
@@ -57,6 +59,9 @@ $(MEM): $(MEM_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(TTY): $(TTY_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(CTYPE): $(CTYPE_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(STRING): $(STRING_SRC)
@@ -88,7 +93,7 @@ run: img/open-delta.img img/kernel.bin
 	$(QEMU) -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(TTY)
+	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(TTY) $(CTYPE)
 	rm -f $(BOOT) $(KERNEL_BIN) $(img)
 
 .PHONY: $(BOOT) $(KERNEL_BIN) $(img) run clean 
