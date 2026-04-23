@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../lib/types.h"
+#include "../../lib/types.h"
 
 #define i386_GDT_CODE_SEG 0x08
 #define i386_GDT_DATA_SEG 0x01
