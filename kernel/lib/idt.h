@@ -8,6 +8,9 @@
 #define KERNEL_CS 0x08
 #define IDT_SIZE  256
 
+#define FLAG_SET(x, flag) x |= (flag)
+#define FLAG_UNSET(x, flag) x &= ~(flag)
+
 typedef enum {
     IDT_FLAG_GATE_TASK              = 0x5,
     IDT_FLAG_GATE_16BIT_INT         = 0x6,
