@@ -20,7 +20,6 @@ extern "C" {
 
 #define KEYBOARD_DATA_PORT 		0x60
 #define KEYBOARD_STATUS_PORT 		0x64
-#define IDT_SIZE 			256
 #define INTERRUPT_GATE 			0x8e
 #define KERNEL_CODE_SEGMENT_OFFSET 	0x10000
 
@@ -51,14 +50,6 @@ typedef struct {
     struct block_header *prev;
     struct block_header *next;
 } block_header_t;
-
-struct IDTEntry {
-    unsigned short int offset_lowerbits;
-    unsigned short selector;
-    unsigned char zero;
-    unsigned char type_attr;
-    unsigned short int offset_higherbits;
-};
 
 /*---For-Base---*/
 #define EOF (-1)
@@ -134,7 +125,7 @@ int _getc(FILE *stream);
 int _putc(int c, FILE *stream);
 void *malloc(unsigned nbytes);
 
-unsigned int kmalloc(unsigned int size, int align, unsigned int *phys_addr);
+void *kmalloc(unsigned int size, int align, unsigned int *phys_addr);
 
 void *free(void *ap);
 char *fgets(char *s, int n, FILE * iop);
