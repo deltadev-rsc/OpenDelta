@@ -6,10 +6,6 @@
 char line[MAXLINE];
 char longest[MAXLINE];
 
-char toUpper(char c) {
-    return islower(c) ? (c - 'a' + 'A') : c;
-}
-
 int rand(void)
 {
     next = next * 1103515245 + 12345;
@@ -75,10 +71,6 @@ int binsearch(int x, int v[], int n)
     }
 
     return -1;
-}
-
-int islower(int c) {
-    return c >= 'a' && c <= 'z';
 }
 
 void copy(void)
