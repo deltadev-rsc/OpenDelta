@@ -37,6 +37,12 @@ TTY = obj/tty.o
 TTY_SRC = tty/tty.c
 CTYPE = obj/ctype.o
 CTYPE_SRC = lib/source/ctype.c 
+IDT_ASM_SRC = cpu/asm/idt.asm
+IDT_ASM = obj/idta.o 
+INTS_ASM_SRC = cpu/asm/ints.asm
+INTS_ASM = obj/ints.o 
+ISR_SRC = cpu/isr.c 
+ISR = obj/isr.o 
 
 # clang flags for build on i386
 FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
@@ -59,7 +65,13 @@ $(ENTRY): $(ENTRY_SRC)
 $(GDT_ASM): $(GDT_ASM_SRC)
 	$(AS) $< -f elf -o $@
 
-$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
+$(IDT_ASM): $(IDT_ASM_SRC)
+	$(AS) $< -f elf -o $@
+
+$(INTS_ASM): $(INTS_ASM_SRC)
+	$(AS) $< -f elf -o $@
+
+$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
 
 $(MEM): $(MEM_SRC)
@@ -69,6 +81,9 @@ $(GDT): $(GDT_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(IDT): $(IDT_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(ISR): $(ISR_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(TTY): $(TTY_SRC)
@@ -106,7 +121,7 @@ run: img/open-delta.img img/kernel.bin
 	$(QEMU) -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
+	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
 	rm -f $(BOOT) $(KERNEL_BIN) $(img)
 
 .PHONY: $(BOOT) $(KERNEL_BIN) $(img) run clean 
