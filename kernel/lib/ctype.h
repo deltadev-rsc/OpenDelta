@@ -10,6 +10,9 @@
 extern "C" {
 #endif 
 
+char toupper(char c);
+int islower(int c);
+
 void isspace(char c);
 void isxdigit(char c);
 void isblank(char c);
