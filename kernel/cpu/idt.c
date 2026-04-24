@@ -3,8 +3,15 @@
 idt_gate_t idt[IDT_ENTRIES];
 idt_reg_t idt_reg;
 
-void set_idt_gate(int n, uint32_t handler)
-{
+void idt_enable_gate(int interrupt) {
+    FLAG_SET(idt[interrupt].flags, IDT_FLAG_PRESENT);
+}
+
+void idt_disable_gate(int interrupt) {
+    FLAG_UNSET(idt[interrupt].flags, IDT_FLAG_PRESENT);
+}
+
+void set_idt_gate(int n, uint32_t handler) {
     idt[n].low_offset = low_16(handler);
     idt[n].sel = KERNEL_CS;
     idt[n].always0 = 0;
@@ -12,8 +19,7 @@ void set_idt_gate(int n, uint32_t handler)
     idt[n].high_offset = high_16(handler);
 }
 
-void set_idt()
-{
+void set_idt() {
     idt_reg.base = (uint64_t)&idt;
     idt_reg.limit = IDT_ENTRIES * sizeof(idt_gate_t) - 1;
     __asm__ __volatile__ ("lidtl (%0)" : : "r" (&idt_reg));
