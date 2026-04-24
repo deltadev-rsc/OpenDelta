@@ -1,5 +1,8 @@
 #include "../lib/idt.h"
 
+idt_gate_t idt[IDT_ENTRIES];
+idt_reg_t idt_reg;
+
 void set_idt_gate(int n, uint32_t handler)
 {
     idt[n].low_offset = low_16(handler);
