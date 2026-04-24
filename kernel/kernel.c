@@ -5,12 +5,14 @@
 #include "./mem/header/memory.h"
 #include "./lib/tty.h"
 #include "./arch/gdt/gdt.h"
+#include "./lib/idt.h"
+#include "lib/isr.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
 extern void load_idt(uintptr_t *idt_ptr);
 
-struct IDTEntry IDT[IDT_SIZE];
+IDTEntry IDT[IDT_SIZE];
 struct Multiboot *mboot = NULL;
 
 static void panic(const char *panic_msg) {
@@ -47,7 +49,7 @@ void IdtInit(void)
     writep(0xA1, 0xff);
 
     idt_address = (unsigned long)IDT;
-    idt_ptr[0] = (sizeof(struct IDTEntry) *IDT_SIZE) + ((idt_address & 0xffff) << 16);
+    idt_ptr[0] = (sizeof(IDTEntry) *IDT_SIZE) + ((idt_address & 0xffff) << 16);
     idt_ptr[1] = idt_address >> 16;
 
     load_idt(idt_ptr);
@@ -64,9 +66,13 @@ void entry_point(void)
     prints(welcome, CYAN);
     prints(os_name, WHITE);
     prints(kern_name, WHITE);
-    prints("[info]: [Initializing IDT]\n", WHITE);
 
     delay();
+
+    prints("[info]: [initializing isr]\n", WHITE);
+    isr_install();
+
+    prints("[info]: [Initializing IDT]\n", WHITE);
 
     __asm__ volatile ( "int $2" );
     __asm__ volatile ( "int $3" );
