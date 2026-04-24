@@ -21,3 +21,11 @@ void hexvalue(char c) {
         c -= '0';
     }
 }
+
+char toupper(char c) {
+    return islower(c) ? (c - 'a' + 'A') : c;
+}
+
+int islower(int c) {
+    return c >= 'a' && c <= 'z';
+}
