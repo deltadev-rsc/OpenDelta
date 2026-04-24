@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-cd ~/open-delta/kernel/src/
+cd ~/OpenDelta/kernel/
 
 function clean {
     echo "clean .obj binaries"
