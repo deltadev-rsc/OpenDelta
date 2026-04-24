@@ -17,15 +17,11 @@ uint64_t next = 1;
 char line[MAXLINE];
 char longest[MAXLINE];
 
-char toUpper(char c);
-
 int rand(void);
 void srand(uint32_t seed);
 
 int power(int base, int n);
 int trim(char s[]);
-
-int islower(int c);
 
 void itoa(int n, char s[]);
 void reverse(char s[]);
