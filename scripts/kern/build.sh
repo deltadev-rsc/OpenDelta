@@ -10,10 +10,13 @@ function build_i386 {
     nasm boot/i386/boot.asm -f bin -o img/boot.bin
     nasm kernel_entry.asm -f elf -o obj/entry.o
     nasm arch/gdt/gdt.asm -f elf -o obj/gdtasm.o
+    nasm cpu/asm/ints.asm -f elf -o obj/intsa.o # intsa - interrupts asm
+    nasm cpu/asm/idt.asm
 
     #---compile-kernel---#
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c kernel.c -o obj/kernel.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c cpu/idt.c -o obj/idt.o
+    clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c cpu/isr.c -o obj/isr.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c lib/source/stdbase.c -o obj/stdbase.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c lib/source/string.c -o obj/string.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c mem/memory.c -o obj/mem.o
@@ -25,7 +28,8 @@ function build_i386 {
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c arch/gdt/gdt.c -o obj/gdt.o
 
     #---create-kernel-bin-file---#
-    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/mem.o obj/string.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o obj/tty.o obj/ctype.o obj/ports.o obj/entry.o -o img/kernel.bin -z noexecstack -T link.ld -Ttext 0x10000 --oformat binary
+    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/mem.o obj/string.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o  \ 
+        \ obj/ints.o obj/isr.o obj/tty.o obj/ctype.o obj/ports.o obj/entry.o -o img/kernel.bin -z noexecstack -T link.ld -Ttext 0x10000 --oformat binary
 
     #---create-os-image---#
     dd if=/dev/zero of=img/open-delta.img bs=512 count=32516 status=none
