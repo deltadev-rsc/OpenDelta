@@ -1,4 +1,4 @@
-[bits 32]
+[bits 16]
 
 switch:
     cli
@@ -8,7 +8,7 @@ switch:
     or eax, 1
     mov cr0, eax
 
-    jmp CODE_SEG:init
+    jmp 0x08:init
 
 [bits 32]
 init:
