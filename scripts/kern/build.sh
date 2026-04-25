@@ -26,9 +26,15 @@ function build_i386 {
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c tty/tty.c -o obj/tty.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c lib/source/ctype.c -o obj/ctype.o
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c arch/gdt/gdt.c -o obj/gdt.o
+    clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c mem/shared_memory.c -o obj/shm.o
+    clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c fs/list.c -o obj/list.o
+    clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c fs/pipe.c -o obj/pipe.o
+    clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c fs/fs.c -o obj/fs.o
+
 
     #---create-kernel-bin-file---#
-    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/mem.o obj/string.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o  \ 
+    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/mem.o obj/string.o 
+        \ obj/shm.o obj/fs.o obj/list.o obj/pipe.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o 
         \ obj/ints.o obj/isr.o obj/tty.o obj/ctype.o obj/ports.o obj/entry.o -o img/kernel.bin -z noexecstack -T link.ld -Ttext 0x10000 --oformat binary
 
     #---create-os-image---#
