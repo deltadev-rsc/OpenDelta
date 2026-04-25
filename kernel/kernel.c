@@ -1,4 +1,5 @@
 #include "./lib/stdbase.h"
+#include "./lib/system.h"
 #include "./lib/types.h"
 #include "./lib/multiboot.h"
 #include "./lib/screen.h"
@@ -72,22 +73,22 @@ void entry_point(void)
     prints("[info]: [initializing isr]\n", WHITE);
     isr_install();
 
-    prints("[info]: [Initializing IDT]\n", WHITE);
-
     __asm__ volatile ( "int $2" );
     __asm__ volatile ( "int $3" );
-
-    IdtInit();
 
     prints("[info]: [initializing i386 GDT]\n", WHITE);
     i386_GDT_init();
 
     delay();
 
+    prints("[info]: [install memory management and shared memory]\n", WHITE);
+
     mboot_ptr = mboot;
     paggingInstall(mboot_ptr->mem_upper + mboot_ptr->mem_lower);
     heapInstall();
     delay();
+
+    shmInstall();
 
     prints("[info]: [starting TTY]\n", WHITE);
     terminalInit();
@@ -98,8 +99,11 @@ void entry_point(void)
 
 void kmain(void)
 {
+    prints("[info]: [Initializing IDT]\n", WHITE);
+    IdtInit();
+
     while (TRUE) {
-        entry_point();
+        // entry_point();
         for (volatile uint32_t i = 0; i < 10000; i++) {
             __asm__ __volatile__ ("hlt");
         }
