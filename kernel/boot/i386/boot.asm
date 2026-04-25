@@ -15,18 +15,19 @@
 ; new line (\n)
 %define ENDL 0x0D, 0x0A
 
+; data, strings, messages...
 section .data
-    str_real db "Started in 16-bit real mode", ENDL, 0x0
-    str_pmode db "Landed in 32-bit prorected mode", ENDL, 0x0
-    str_load db "Loading dltkernel from the disk", ENDL, 0x0
+    str_real db "Started in 16-bit real mode", ENDL, 0
+    str_pmode db "Landed in 32-bit prorected mode", ENDL, 0
+    str_load db "Loading dltkernel from the disk", ENDL, 0
     
-    boot_drive db 0x0
-    boot_part_seg db 0x0
-    boot_part_off db 0x0
+    boot_drive db 0
+    boot_part_seg dw 0
+    boot_part_off dw 0
     
     ; errors
-    str_returned_kernel db "Returned from kernel. Error?", 0x0
-    str_read_fail db "[err]: [read failed!]", 0x0
+    str_returned_kernel db "Returned from kernel. Error?", 0
+    str_read_fail db "[err]: [read failed!]", 0
 
 ; main and important variably for starting program
 section .text
@@ -36,29 +37,36 @@ section .text
 _start:
     cli 
 
-    mov ax, PARTITION_ENTRY_SEGMENT
-    mov es, ax
-    mov di, PARTITION_ENTRY_OFFSET
-    mov cx, 16
-    rep movsb
-
-    mov ax, 0
+    xor ax, ax
     mov ds, ax
     mov es, ax
+    mov ss, ax 
+    mov sp, 0x7000
 
-    mov ss, ax
-    mov sp, 0x7C00 
+    mov [boot_drive], dl
 
-    mov bx, 0x100000
-    mov es, bx
-    int 13h
+    ; mov ax, PARTITION_ENTRY_SEGMENT
+    ; mov es, ax
+    ; mov di, PARTITION_ENTRY_OFFSET
+    ; mov cx, 16
+
+    ; mov ax, 0
+    ; mov ds, ax
+    ; mov es, ax
+
+    ; mov ss, ax
+    ; mov sp, 0x7C00 
+
+    ; mov bx, 0x100000
+    ; mov es, bx
+    ; int 13h
 
     mov  bx, str_real 
     call print
     call print_nl
 
     call load_kernel
-    call switch
+    jmp switch
 
     jmp $
 
@@ -68,47 +76,47 @@ load_kernel:
     call print
     call print_nl
 
-    mov	bx, kernel_offset
-    mov	dh, 31
+    mov	bx, 0x1000
+    mov es, ax 
+    xor bx, bx
+
     mov	dl, [boot_drive]
-    call	disk_load
+    mov dh, 0
+    mov ch, 0
+    mov cl, 2
+    mov al, 32
+    mov ah, 0x02
+    
     int 0x13
+    jc read_error
     ret
+
+read_error:
+    mov bx, str_read_fail
+    call print
+    jmp $
 
 [bits 32]
 protected_mode:
-    mov ebx, str_pmode
-    mov ax, 10h 
-    mov bx, 0x100000
+    mov ax, 0x10
     mov ds, ax
-    mov ss, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
+    mov ss, ax
+    mov esp, 0x90000
 
-    mov dx, [boot_part_seg]
-    shl edx, 16
-    mov dx, [boot_part_off]
-    push edx 
-
-    xor eax, eax
-    xor ebx, ebx
-    xor ecx, ecx
-    xor edx, edx
-    xor edi, edi
-    mov dl, [boot_drive]
-    push edx
-    call _start 
-
-    cld
-    rep stosb
-
+    mov ebx, str_pmode
     call print_pmode
-    call kernel_offset
-    call disk_load
-	ret
 
+    mov eax, [boot_part_seg]
+    shl eax, 16
+    or eax, [boot_part_off]
+    push eax
+    movzx eax, byte [boot_drive] 
+
+    jmp kernel_offset
     jmp $ 
 
-times 510 - ($-$$) db 0x0
+times 510 - ($-$$) db 0
 dw 0xAA55
