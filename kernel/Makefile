@@ -29,6 +29,8 @@ GDT_ASM = obj/gdt_asm.o
 GDT_ASM_SRC = arch/gdt/gdt.asm
 MEM = obj/mem.o
 MEM_SRC = mem/memory.c
+SHM = obj/shm.o
+SHM_SRC = mem/shared_memory.c
 SCREEN = obj/screen.o 
 SCREEN_SRC = drvs/screen.c 
 PORTS = obj/ports.o
@@ -43,6 +45,12 @@ INTS_ASM_SRC = cpu/asm/ints.asm
 INTS_ASM = obj/ints.o 
 ISR_SRC = cpu/isr.c 
 ISR = obj/isr.o 
+PIPE = obj/pipe.o
+PIPE_SRC = fs/pipe.c 
+LIST = obj/list.o 
+LIST_SRC = fs/list.c 
+FS = obj/fs.o 
+FS_SRC = fs/fs.c
 
 # clang flags for build on i386
 FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
@@ -71,10 +79,13 @@ $(IDT_ASM): $(IDT_ASM_SRC)
 $(INTS_ASM): $(INTS_ASM_SRC)
 	$(AS) $< -f elf -o $@
 
-$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
-	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat binary 
+$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE)
+	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat elf32-i386
 
 $(MEM): $(MEM_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(SHM): $(SHM_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(GDT): $(GDT_SRC)
@@ -87,6 +98,15 @@ $(ISR): $(ISR_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(TTY): $(TTY_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(PIPE): $(PIPE_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(LIST): $(LIST_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(FS): $(FS_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(CTYPE): $(CTYPE_SRC)
@@ -121,7 +141,7 @@ run: img/open-delta.img img/kernel.bin
 	$(QEMU) -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT)
+	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE)
 	rm -f $(BOOT) $(KERNEL_BIN) $(img)
 
 .PHONY: $(BOOT) $(KERNEL_BIN) $(img) run clean 
