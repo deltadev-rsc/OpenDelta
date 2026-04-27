@@ -63,9 +63,10 @@ typedef struct {
 #define S_IDBLK 0060000
 #define S_IFREG 0100000
 
-#define stdin (&_iob[0])
-#define stdout (&_iob[1])
-#define stderr (&_iob[2])
+#define stdin 0
+#define stdout 1
+#define stderr 2
+#define debug 3
 
 #define NALLOC 1024
 
@@ -73,8 +74,22 @@ typedef struct {
 #define ferror(p) (((p)->flag & _ERR) != 0)
 #define fileno(p) ((p)->fd)
 
+#define e9_putc(c) outb(0xE9, c);
+
 #define getchar()   _getc(stdin)
 #define putchar(x)  _putc((x), stdout)
+
+#define PRINTF_STATE_NORMAL         0
+#define PRINTF_STATE_LENGTH         1
+#define PRINTF_STATE_LENGTH_SHORT   2
+#define PRINTF_STATE_LENGTH_LONG    3
+#define PRINTF_STATE_SPEC           4
+
+#define PRINTF_LENGTH_DEFAULT       0
+#define PRINTF_LENGTH_SHORT_SHORT   1
+#define PRINTF_LENGTH_SHORT         2
+#define PRINTF_LENGTH_LONG          3
+#define PRINTF_LENGTH_LONG_LONG     4
 
 /*---структуры---*/
 typedef struct _iobuf {
@@ -109,6 +124,7 @@ enum _flags {
 /*---типы---*/
 typedef long Align;
 typedef union header Header;
+typedef int fd_t; 
 
 union header {
     struct {
@@ -119,14 +135,17 @@ union header {
 };
 
 char sbrk(int incr);
+void _fputc(char c, FILE *file);
 int _fillbuf(FILE *stream);
 int _flushbuf(int c, FILE *stream);
 int _getc(FILE *stream);
-int _putc(int c, FILE *stream);
+int _putc(char c, FILE *stream);
 void *malloc(unsigned nbytes);
 
 void *kmalloc(unsigned int size, int align, unsigned int *phys_addr);
 
+void fprintf_unsigned(FILE *file, unsigned long long num, int radix);
+void fprintf_signed(FILE *file, long long num, int radix);
 void *free(void *ap);
 char *fgets(char *s, int n, FILE * iop);
 int fputs(char *s, FILE *iop);
