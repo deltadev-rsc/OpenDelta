@@ -123,5 +123,6 @@ extern fs_node_t *fs_root;
 
 uint32_t readFileSys(fs_node_t *node, uint64_t offset, uint32_t size, uint8_t *buffer);
 uint32_t writeFileSys(fs_node_t *node, uint64_t offset, uint32_t size, uint8_t *buffer);
+int vfs_write(fd_t *file, unsigned char *data, unsigned int size);
 
 #endif
