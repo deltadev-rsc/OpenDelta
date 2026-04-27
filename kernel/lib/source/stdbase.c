@@ -1,6 +1,7 @@
 #include "../stdbase.h"
 #include "../types.h"
 #include "../string.h"
+#include "../../fs/headers/fs.h"
 
 FILE _iob[OPEN_MAX];
 static Header base;
@@ -8,6 +9,7 @@ static Header *freep = NULL;
 static char *dataStart = (char *)0x100000;
 static char *dataEnd = &dataStart;
 uint32_t freeMemAddr = 0x10000;
+const char g_hex_chars[] = "0123456789abcdef";
 
 int _fillbuf(FILE *stream)
 {
@@ -175,6 +177,32 @@ uint8_t inb(uint16_t port) {
     return ret;
 }
 
+void fprintf_unsigned(FILE *file, unsigned long long num, int radix) 
+{
+    char buf[32];
+    int pos = 0;
+
+    do {
+        unsigned long long rem = num % radix;
+        num /= radix;
+        buf[pos++] = g_hex_chars[rem];
+    } while (num > 0);
+
+    while (--pos >= 0) {
+        _fputc(buf[pos], file);
+    }
+}
+
+void fprintf_signed(FILE *file, long long num, int radix) 
+{
+    if (num < 0) {
+        _fputc('-', file);
+        fprintf_unsigned(file, -num, radix);
+    }
+    else {
+        fprintf_unsigned(file, num, radix);
+    }
+}
 void prints(const char *fmt, Colors color, ...)
 {
     char *video_mem = (char *)0xb8000;
@@ -196,6 +224,10 @@ void prints(const char *fmt, Colors color, ...)
     }
 }
 
+void _fputc(char c, FILE *file) {
+    vfs_write((fd_t *)file, (unsigned char *)&c, sizeof(c));
+}
+
 int _getc(FILE *stream)
 {
     if (--(stream)->cnt >= 0) {
@@ -206,7 +238,7 @@ int _getc(FILE *stream)
     }
 }
 
-int _putc(int c, FILE *stream)
+int _putc(char c, FILE *stream)
 {
     if (--(stream)->cnt >= 0) {
         return *(stream)->ptr++ = (c);
