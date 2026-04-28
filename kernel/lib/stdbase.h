@@ -4,6 +4,7 @@
 #pragma once
 
 #include "./types.h"
+#include "./stdarg.h"
 
 #ifdef __cplusplus 
 extern "C" {
@@ -145,6 +146,8 @@ void *kmalloc(unsigned int size, int align, unsigned int *phys_addr);
 
 void fprintf_unsigned(FILE *file, unsigned int num, int radix);
 void fprintf_signed(FILE *file, long long num, int radix);
+void _vfprintf(FILE *file, const char *fmt, va_list args);
+void _fprtinf(FILE *file, const char *fmt, ...);
 void *free(void *ap);
 char *fgets(char *s, int n, FILE * iop);
 int fputs(char *s, FILE *iop);
