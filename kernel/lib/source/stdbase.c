@@ -177,13 +177,14 @@ uint8_t inb(uint16_t port) {
     return ret;
 }
 
-void fprintf_unsigned(FILE *file, unsigned long long num, int radix) 
+
+void fprintf_unsigned(FILE *file, unsigned int num, int radix) 
 {
     char buf[32];
     int pos = 0;
 
     do {
-        unsigned long long rem = num % radix;
+        unsigned int rem = num % radix;
         num /= radix;
         buf[pos++] = g_hex_chars[rem];
     } while (num > 0);
