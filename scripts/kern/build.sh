@@ -11,7 +11,7 @@ function build_i386 {
     nasm kernel_entry.asm -f elf -o obj/entry.o
     nasm arch/gdt/gdt.asm -f elf -o obj/gdtasm.o
     nasm cpu/asm/ints.asm -f elf -o obj/intsa.o # intsa - interrupts asm
-    nasm cpu/asm/idt.asm
+    nasm cpu/asm/idt.asm -f elf -o obj/idta.o 
 
     #---compile-kernel---#
     clang -m32 -march=i386 -fno-pie -ffreestanding -nostdlib -c kernel.c -o obj/kernel.o
@@ -33,9 +33,11 @@ function build_i386 {
 
 
     #---create-kernel-bin-file---#
-    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/mem.o obj/string.o 
-        \ obj/shm.o obj/fs.o obj/list.o obj/pipe.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o 
-        \ obj/ints.o obj/isr.o obj/tty.o obj/ctype.o obj/ports.o obj/entry.o -o img/kernel.bin -z noexecstack -T link.ld -Ttext 0x10000 --oformat binary
+    ld.lld -m elf_i386 -s obj/kernel.o obj/stdbase.o obj/idt.o obj/idta.o
+        \ obj/mem.o obj/string.o obj/shm.o obj/fs.o obj/list.o 
+        \ obj/pipe.o obj/types.o obj/screen.o  obj/gdt.o obj/gdtasm.o 
+        \ obj/ints.o obj/isr.o obj/tty.o obj/ctype.o obj/ports.o 
+        \ obj/entry.o -o img/kernel.bin -z noexecstack -T link.ld -Ttext 0x10000 --oformat binary
 
     #---create-os-image---#
     dd if=/dev/zero of=img/open-delta.img bs=512 count=32516 status=none
