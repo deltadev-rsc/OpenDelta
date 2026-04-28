@@ -7,7 +7,8 @@
 #include "./lib/tty.h"
 #include "./arch/gdt/gdt.h"
 #include "./lib/idt.h"
-#include "lib/isr.h"
+#include "./lib/isr.h"
+#include "./fpu/fpu.h"
 
 extern char readp(uint16_t port);
 extern void writep(uint16_t port, uint8_t data);
@@ -89,10 +90,10 @@ void entry_point(void)
     delay();
 
     shmInstall();
-
-    prints("[info]: [starting TTY]\n", WHITE);
-    terminalInit();
-    delay();
+    
+    prints("[info]: [install hardware drivers]\n", WHITE);
+    prints("[info]: [install fpu driver]\n", WHITE);
+    fpu_install();
 
     return;
 }
@@ -102,6 +103,10 @@ void kmain(void)
     prints("[info]: [Initializing IDT]\n", WHITE);
     IdtInit();
 
+    prints("[info]: [starting TTY]\n", WHITE);
+    terminalInit();
+    delay();
+
     while (TRUE) {
         // entry_point();
         for (volatile uint32_t i = 0; i < 10000; i++) {
@@ -109,3 +114,4 @@ void kmain(void)
         }
     }
 }
+
