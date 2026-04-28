@@ -124,7 +124,6 @@ enum _flags {
 /*---типы---*/
 typedef long Align;
 typedef union header Header;
-typedef int fd_t; 
 
 union header {
     struct {
