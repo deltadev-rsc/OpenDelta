@@ -53,6 +53,12 @@ FS = obj/fs.o
 FS_SRC = fs/fs.c
 FPU = obj/fpu.o
 FPU_SRC = fpu/fpu.c
+SYS = obj/sys.o
+SYS_SRC = syscall/syscall.c 
+TASK = obj/task.o
+TASK_SRC = syscall/task.c
+PROC = obj/proc.o 
+PROC_SRC = syscall/proc.c 
 
 # clang flags for build on i386
 FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
@@ -81,7 +87,7 @@ $(IDT_ASM): $(IDT_ASM_SRC)
 $(INTS_ASM): $(INTS_ASM_SRC)
 	$(AS) $< -f elf -o $@
 
-$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE) $(FPU)
+$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE) $(FPU) $(SYS) $(TASK) $(PROC)
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat elf32-i386
 
 $(MEM): $(MEM_SRC)
@@ -94,6 +100,15 @@ $(GDT): $(GDT_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(IDT): $(IDT_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(TASK): $(TASK_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(PROC): $(PROC_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(SYS): $(SYS_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(ISR): $(ISR_SRC)
@@ -146,7 +161,11 @@ run: img/open-delta.img img/kernel.bin
 	$(QEMU) -drive format=raw,file=img/boot.bin -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE) $(FPU)
+	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS)    \
+		  $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT)   \
+		  $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE)  \
+		  $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE)  \
+		  $(FPU) $(TASK) $(SYS) $(PROC)
 	rm -f $(BOOT) $(KERNEL_BIN) $(img)
 
 .PHONY: $(BOOT) $(KERNEL_BIN) $(img) run clean 
