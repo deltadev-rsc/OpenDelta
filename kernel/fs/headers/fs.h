@@ -63,6 +63,7 @@ typedef int (*selectcheck_type_t) (struct fs_node *);
 typedef int (*selectwait_type_t) (struct fs_node *, void * process);
 typedef int (*chown_type_t) (struct fs_node *, int, int);
 typedef void (*truncate_type_t) (struct fs_node *);
+typedef int fd_t;
 
 typedef struct fs_node {
 	char name[256];			// the filename
