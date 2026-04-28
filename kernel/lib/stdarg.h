@@ -18,7 +18,7 @@ typedef __builtin_va_list __delta_va_list;
 
 #ifdef _STDARG_H
 
-#if (defined __STDC_VERSION__ && __STDC_VERSION__ > 201710L) || __cplusplus >= 202400L
+#if (defined __STDC_VERSION__ && __STDC_VERSION__ > 201710L) 
     #define va_start(...) __builtin_c23_va_start(__VA_ARGS__)
 #else
     #define va_start(v,l)	__builtin_va_start(v,l)
@@ -27,7 +27,7 @@ typedef __builtin_va_list __delta_va_list;
 #define va_end(v)	__builtin_va_end(v)
 #define va_arg(v,l)	__builtin_va_arg(v,l)
 
-#if !defined(__STRICT_ANSI__) || __STDC_VERSION__ + 0 >= 199900L || __cplusplus + 0 >= 201103L
+#if !defined(__STRICT_ANSI__) || __STDC_VERSION__ + 0 >= 199900L 
     #define va_copy(d,s)	__builtin_va_copy(d,s)
 #endif
 
@@ -61,10 +61,10 @@ typedef __builtin_va_list __delta_va_list;
                 #ifndef _VA_LIST_T_H
                     #ifndef __va_list__
                         typedef __delta_va_list va_list;
-                    #endif /* not __va_list__ */
-                #endif /* not _VA_LIST_T_H */
-            #endif /* not _VA_LIST */
-        #endif /* not _VA_LIST_DEFINED */
+                    #endif 
+                #endif 
+            #endif 
+        #endif 
 
     #if !(defined (__BSD_NET2__) || defined (____386BSD____) || defined (__bsdi__) || defined (__sequent__) || defined (__FreeBSD__))
         #define _VA_LIST_
@@ -88,9 +88,8 @@ typedef __builtin_va_list __delta_va_list;
 #endif 
 #endif 
 
-#if (defined __STDC_VERSION__ && __STDC_VERSION__ > 201710L) \
-    || __cplusplus >= 202400L
-#define __STDC_VERSION_STDARG_H__	202311L
+#if (defined __STDC_VERSION__ && __STDC_VERSION__ > 201710L)
+    #define __STDC_VERSION_STDARG_H__	202311L
 #endif
 
 #endif 
