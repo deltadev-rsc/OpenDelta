@@ -144,7 +144,7 @@ void *malloc(unsigned nbytes);
 
 void *kmalloc(unsigned int size, int align, unsigned int *phys_addr);
 
-void fprintf_unsigned(FILE *file, unsigned long long num, int radix);
+void fprintf_unsigned(FILE *file, unsigned int num, int radix);
 void fprintf_signed(FILE *file, long long num, int radix);
 void *free(void *ap);
 char *fgets(char *s, int n, FILE * iop);
