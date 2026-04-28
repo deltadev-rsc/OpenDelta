@@ -51,6 +51,8 @@ LIST = obj/list.o
 LIST_SRC = fs/list.c 
 FS = obj/fs.o 
 FS_SRC = fs/fs.c
+FPU = obj/fpu.o
+FPU_SRC = fpu/fpu.c
 
 # clang flags for build on i386
 FLAGS = -m32 -march=i386 -std=c17 -fno-pie -ffreestanding -nostdlib -Wall -Wextra -Wstrict-prototypes
@@ -79,7 +81,7 @@ $(IDT_ASM): $(IDT_ASM_SRC)
 $(INTS_ASM): $(INTS_ASM_SRC)
 	$(AS) $< -f elf -o $@
 
-$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE)
+$(KERNEL_BIN): $(ENTRY) $(KERNEL_OBJ) $(STDBASE) $(SCREEN) $(PORTS) $(IDT) $(IDT_ASM) $(ISR) $(INTS_ASM) $(STRING) $(MEM) $(TYPES) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE) $(FPU)
 	$(LD) -m elf_i386 -s -o $@ -z noexecstack -T link.ld -Ttext 0x10000 $^ --oformat elf32-i386
 
 $(MEM): $(MEM_SRC)
@@ -101,6 +103,9 @@ $(TTY): $(TTY_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(PIPE): $(PIPE_SRC)
+	$(CC) $(FLAGS) -c $< -o $@
+
+$(FPU):  $(FPU_SRC)
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(LIST): $(LIST_SRC)
@@ -138,10 +143,10 @@ $(img): $(BOOT) $(KERNEL_BIN)
 	cat $(BOOT) $(KERNEL_BIN) > img/open-delta.img
 
 run: img/open-delta.img img/kernel.bin
-	$(QEMU) -hdd $<  $(QEMU_FLAGS)
+	$(QEMU) -drive format=raw,file=img/boot.bin -hdd $<  $(QEMU_FLAGS)
 
 clean:
-	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE)
+	rm -f $(ENTRY) $(KERNEL_OBJ) $(SCREEN) $(PORTS) $(STDBASE) $(TYPES) $(MEM) $(STRING) $(IDT) $(IDT_ASM) $(INTS_ASM) $(ISR) $(TTY) $(CTYPE) $(GDT_ASM) $(GDT) $(SHM) $(FS) $(LIST) $(PIPE) $(FPU)
 	rm -f $(BOOT) $(KERNEL_BIN) $(img)
 
 .PHONY: $(BOOT) $(KERNEL_BIN) $(img) run clean 
