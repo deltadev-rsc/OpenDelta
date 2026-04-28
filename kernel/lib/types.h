@@ -6,7 +6,7 @@
 #define FALSE   ((char *)0)
 #define TRUE    ((char *)1)
 
-typedef unsigned char boolean; 
+typedef char boolean; 
 
 // idt macros
 #define low_16(address) (uint16_t)((address) & 0xFFFF)
