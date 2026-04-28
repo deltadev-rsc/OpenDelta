@@ -94,7 +94,8 @@ void entry_point(void)
     prints("[info]: [install hardware drivers]\n", WHITE);
     prints("[info]: [install fpu driver]\n", WHITE);
     fpu_install();
-
+    syscallInstall();
+    
     return;
 }
 
